@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="tarjeta detalle-lugar">
+
+    {% if lugar.imagen %}
+        <img
+            src="{{ lugar.imagen.url }}"
+            alt="{{ lugar.nombre }}"
+            class="imagen-detalle"
+        >
+    {% endif %}
+
+    <div class="tarjeta-contenido">
+
+        <h1>{{ lugar.nombre }}</h1>
+
+        <p>
+            <strong>Tipo:</strong>
+            {{ lugar.get_tipo_display }}
+        </p>
+
+        <p>
+            {{ lugar.descripcion }}
+        </p>
+
+        <h2>Categorías que recibe</h2>
+
+        {% if lugar.categorias %}
+            <div>
+                {% for categoria in lugar.categorias %}
+                    <span class="etiqueta">
+                        {{ categoria|title }}
+                    </span>
+                {% endfor %}
+            </div>
+        {% else %}
+
+            <p>No hay categorías especificadas.</p>
+
+        {% endif %}
+
+        <h2>Servicios</h2>
+
+        <p>
+            {{ lugar.servicios }}
+        </p>
+
+        <h2>Contacto</h2>
+
+        <p>
+            <strong>Ubicación:</strong>
+            {{ lugar.ubicacion }}
+        </p>
+
+        {% if lugar.telefono %}
+            <p>
+                <strong>Teléfono:</strong>
+                {{ lugar.telefono }}
+            </p>
+        {% endif %}
+
+        {% if lugar.horario %}
+            <p>
+                <strong>Horario:</strong>
+                {{ lugar.horario }}
+            </p>
+        {% endif %}
+
+        <p>
+            <a href="{% url 'lugares_segunda_vida' %}">
+                ← Volver a lugares
+            </a>
+        </p>
+
+    </div>
+
+</div>
+
+{% endblock %}

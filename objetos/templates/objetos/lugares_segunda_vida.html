@@ -1,0 +1,299 @@
+{% extends "base.html" %}
+
+{% block title %}Lugares | Segunda Vida{% endblock %}
+
+{% block content %}
+
+<section class="lugares-seccion">
+
+
+<!-- Encabezado -->
+<div class="encabezado-seccion lugares-encabezado">
+    <div class="encabezado-icono">
+        <i data-lucide="map-pin" aria-hidden="true"></i>
+    </div>
+
+    <div>
+        <span class="texto-seccion">COMUNIDAD Y RECURSOS</span>
+
+        <h1>Lugares que dan una Segunda Vida</h1>
+
+        <p>
+            Encuentra espacios donde puedes reparar, reutilizar,
+            transformar o reciclar objetos.
+        </p>
+    </div>
+</div>
+
+
+<!-- Filtro -->
+<div class="tarjeta filtro-lugares">
+
+    <form method="get" class="formulario-filtro-lugares">
+
+        <div class="campo-filtro">
+            <label for="categoria">
+                <i data-lucide="filter" aria-hidden="true"></i>
+                Categoría
+            </label>
+
+            <select name="categoria" id="categoria">
+                <option value="">Todas las categorías</option>
+
+                {% for valor, nombre in categorias %}
+                    <option
+                        value="{{ valor }}"
+                        {% if categoria_seleccionada == valor %}selected{% endif %}
+                    >
+                        {{ nombre }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="acciones-filtro">
+
+            <button type="submit" class="boton">
+                <i data-lucide="search" aria-hidden="true"></i>
+                Filtrar
+            </button>
+
+            {% if categoria_seleccionada %}
+                <a
+                    href="{% url 'lugares_segunda_vida' %}"
+                    class="boton-secundario"
+                >
+                    <i data-lucide="x" aria-hidden="true"></i>
+                    Limpiar
+                </a>
+            {% endif %}
+
+        </div>
+
+    </form>
+
+</div>
+
+
+<!-- Resultados -->
+{% if lugares %}
+
+    <div class="lugares-resultados">
+
+        <div class="resultados-encabezado">
+            <div>
+                <h2>Espacios disponibles</h2>
+
+                <p>
+                    {{ lugares|length }}
+                    {% if lugares|length == 1 %}
+                        lugar encontrado
+                    {% else %}
+                        lugares encontrados
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+
+
+        <div class="tarjetas-grid lugares-grid">
+
+            {% for lugar in lugares %}
+
+                <article class="tarjeta-item tarjeta-lugar">
+
+                    <!-- Imagen -->
+                    <div class="lugar-imagen">
+
+                        {% if lugar.imagen %}
+
+                            <img
+                                src="{{ lugar.imagen.url }}"
+                                alt="{{ lugar.nombre }}"
+                            >
+
+                        {% else %}
+
+                            <div class="lugar-imagen-placeholder">
+                                <i data-lucide="map-pin" aria-hidden="true"></i>
+                            </div>
+
+                        {% endif %}
+
+                        <span class="tipo-lugar">
+                            <i data-lucide="building-2" aria-hidden="true"></i>
+                            {{ lugar.get_tipo_display }}
+                        </span>
+
+                    </div>
+
+
+                    <!-- Contenido -->
+                    <div class="tarjeta-contenido lugar-contenido">
+
+                        <h2>{{ lugar.nombre }}</h2>
+
+                        {% if lugar.descripcion %}
+                            <p class="lugar-descripcion">
+                                {{ lugar.descripcion }}
+                            </p>
+                        {% endif %}
+
+
+                        <!-- Categorías -->
+                        {% if lugar.categorias %}
+
+                            <div class="bloque-lugar">
+
+                                <span class="etiqueta-titulo">
+                                    Categorías
+                                </span>
+
+                                <div class="etiquetas-lugar">
+
+                                    {% for categoria in lugar.categorias %}
+
+                                        <span class="etiqueta">
+                                            {{ categoria|title }}
+                                        </span>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            </div>
+
+                        {% endif %}
+
+
+                        <!-- Servicios -->
+                        {% if lugar.servicios %}
+
+                            <div class="dato-lugar">
+
+                                <div class="dato-icono">
+                                    <i data-lucide="wrench" aria-hidden="true"></i>
+                                </div>
+
+                                <div>
+                                    <span>Servicios</span>
+                                    <p>{{ lugar.servicios }}</p>
+                                </div>
+
+                            </div>
+
+                        {% endif %}
+
+
+                        <!-- Ubicación -->
+                        {% if lugar.ubicacion %}
+
+                            <div class="dato-lugar">
+
+                                <div class="dato-icono">
+                                    <i data-lucide="map-pin" aria-hidden="true"></i>
+                                </div>
+
+                                <div>
+                                    <span>Ubicación</span>
+                                    <p>{{ lugar.ubicacion }}</p>
+                                </div>
+
+                            </div>
+
+                        {% endif %}
+
+
+                        <!-- Teléfono -->
+                        {% if lugar.telefono %}
+
+                            <div class="dato-lugar">
+
+                                <div class="dato-icono">
+                                    <i data-lucide="phone" aria-hidden="true"></i>
+                                </div>
+
+                                <div>
+                                    <span>Teléfono</span>
+                                    <p>{{ lugar.telefono }}</p>
+                                </div>
+
+                            </div>
+
+                        {% endif %}
+
+
+                        <!-- Horario -->
+                        {% if lugar.horario %}
+
+                            <div class="dato-lugar">
+
+                                <div class="dato-icono">
+                                    <i data-lucide="clock-3" aria-hidden="true"></i>
+                                </div>
+
+                                <div>
+                                    <span>Horario</span>
+                                    <p>{{ lugar.horario }}</p>
+                                </div>
+
+                            </div>
+
+                        {% endif %}
+
+
+                        <!-- Botón -->
+                        <a
+                            href="{% url 'detalle_lugar' lugar.id %}"
+                            class="boton boton-lugar"
+                        >
+                            Ver información
+                            <i data-lucide="arrow-right" aria-hidden="true"></i>
+                        </a>
+
+                    </div>
+
+                </article>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+{% else %}
+
+    <!-- Estado vacío -->
+    <div class="estado-vacio lugares-vacio">
+
+        <div class="estado-vacio-icono">
+            <i data-lucide="map-pin-off" aria-hidden="true"></i>
+        </div>
+
+        <h2>No encontramos lugares</h2>
+
+        <p>
+            No hay lugares disponibles para la categoría seleccionada.
+            Prueba con otra categoría.
+        </p>
+
+        {% if categoria_seleccionada %}
+
+            <a
+                href="{% url 'lugares_segunda_vida' %}"
+                class="boton-secundario"
+            >
+                <i data-lucide="rotate-ccw" aria-hidden="true"></i>
+                Ver todos los lugares
+            </a>
+
+        {% endif %}
+
+    </div>
+
+{% endif %}
+
+
+</section>
+
+{% endblock %}

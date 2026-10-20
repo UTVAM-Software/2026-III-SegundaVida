@@ -1,0 +1,404 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Publicar objeto | Segunda Vida
+{% endblock %}
+
+{% block content %}
+
+    <section class="publicar-pagina">
+
+        <div class="publicar-encabezado">
+
+            <span class="seccion-etiqueta">
+                SEGUNDA OPORTUNIDAD
+            </span>
+
+            <h1>Publica un objeto</h1>
+
+            <p>
+                Dale una segunda oportunidad a algo que ya no necesitas.
+                Alguien podría repararlo, reutilizarlo o transformarlo.
+            </p>
+
+        </div>
+
+        <form
+            method="POST"
+            enctype="multipart/form-data"
+            class="formulario-publicar"
+        >
+
+            {% csrf_token %}
+
+            <div class="bloque-publicar">
+
+                <div class="bloque-encabezado">
+                    <div class="numero-bloque">01</div>
+                    <div>
+                        <span>INFORMACIÓN</span>
+                        <h2>Cuéntanos sobre el objeto</h2>
+                        <p>Describe qué estás compartiendo.</p>
+                    </div>
+                </div>
+
+                <div class="campos-grid">
+
+                    <div class="campo-publicar campo-completo">
+                        <label for="{{ formulario.nombre.id_for_label }}">
+                            Nombre del objeto
+                        </label>
+                        {{ formulario.nombre }}
+                        {% if formulario.nombre.errors %}
+                            <div class="error-formulario">
+                                {{ formulario.nombre.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="campo-publicar campo-completo">
+                        <label for="{{ formulario.descripcion.id_for_label }}">
+                            Descripción
+                        </label>
+                        {{ formulario.descripcion }}
+                        <small>
+                            Cuenta un poco sobre el objeto, su estado
+                            o algún detalle que pueda ser útil.
+                        </small>
+                        {% if formulario.descripcion.errors %}
+                            <div class="error-formulario">
+                                {{ formulario.descripcion.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="bloque-publicar">
+
+                <div class="bloque-encabezado">
+                    <div class="numero-bloque">02</div>
+                    <div>
+                        <span>CARACTERÍSTICAS</span>
+                        <h2>¿Qué tipo de objeto es?</h2>
+                        <p>Ayuda a otras personas a encontrarlo fácilmente.</p>
+                    </div>
+                </div>
+
+                <div class="campos-grid">
+
+                    <div class="campo-publicar">
+                        <label for="{{ formulario.categoria.id_for_label }}">
+                            Categoría
+                        </label>
+                        {{ formulario.categoria }}
+                        {% if formulario.categoria.errors %}
+                            <div class="error-formulario">
+                                {{ formulario.categoria.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="campo-publicar">
+                        <label for="{{ formulario.estado.id_for_label }}">
+                            Estado
+                        </label>
+                        {{ formulario.estado }}
+                        {% if formulario.estado.errors %}
+                            <div class="error-formulario">
+                                {{ formulario.estado.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="campo-publicar campo-completo">
+                        <label for="{{ formulario.funciona.id_for_label }}">
+                            ¿Funciona?
+                        </label>
+                        {{ formulario.funciona }}
+                        {% if formulario.funciona.errors %}
+                            <div class="error-formulario">
+                                {{ formulario.funciona.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="bloque-publicar">
+
+                <div class="bloque-encabezado">
+                    <div class="numero-bloque">03</div>
+                    <div>
+                        <span>SEGUNDA OPORTUNIDAD</span>
+                        <h2>¿Qué puede hacerse con él?</h2>
+                        <p>
+                            Elige la opción que mejor describe
+                            la oportunidad que ofrece este objeto.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="campo-publicar">
+                    <label for="{{ formulario.accion.id_for_label }}">
+                        Acción disponible
+                    </label>
+                    {{ formulario.accion }}
+                    {% if formulario.accion.errors %}
+                        <div class="error-formulario">
+                            {{ formulario.accion.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+            </div>
+
+            <div class="bloque-publicar">
+
+                <div class="bloque-encabezado">
+                    <div class="numero-bloque">04</div>
+                    <div>
+                        <span>UBICACIÓN</span>
+                        <h2>¿Dónde se encuentra?</h2>
+                        <p>
+                            Escribe una ubicación aproximada y ajusta
+                            el marcador en el mapa.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="campo-publicar">
+                    <label for="{{ formulario.ubicacion.id_for_label }}">
+                        Ubicación
+                    </label>
+                    {{ formulario.ubicacion }}
+                    <small>
+                        No necesitas indicar una dirección exacta.
+                        Puedes utilizar una zona o punto de referencia.
+                    </small>
+                    {% if formulario.ubicacion.errors %}
+                        <div class="error-formulario">
+                            {{ formulario.ubicacion.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="campo-mapa">
+                    <div class="mapa-ayuda">
+                        <strong>Ajusta la ubicación en el mapa</strong>
+                        <span>
+                            El marcador se coloca automáticamente
+                            según la ubicación escrita.
+                        </span>
+                    </div>
+
+                    <div id="mapa-publicar"></div>
+
+                    <input type="hidden" name="latitud" id="id_latitud">
+                    <input type="hidden" name="longitud" id="id_longitud">
+                </div>
+
+            </div>
+
+            <div class="bloque-publicar">
+
+                <div class="bloque-encabezado">
+                    <div class="numero-bloque">05</div>
+                    <div>
+                        <span>IMÁGENES</span>
+                        <h2>Muéstralo</h2>
+                        <p>
+                            Las imágenes ayudan a conocer mejor
+                            el estado del objeto.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="campo-imagenes-publicar">
+                    <label for="{{ imagen_form.imagen.id_for_label }}">
+                        Fotografías del objeto
+                    </label>
+
+                    <p>
+                        Puedes subir hasta 5 imágenes. Se recomienda mostrar
+                        diferentes ángulos y detalles importantes.
+                    </p>
+
+                    <div class="selector-imagenes">
+                        {{ imagen_form.imagen }}
+                        <span class="selector-icono" aria-hidden="true"><i data-lucide="image-plus" class="lucide-icon" aria-hidden="true"></i></span>
+                        <strong>Selecciona tus imágenes</strong>
+                        <small>Hasta 5 fotografías</small>
+                    </div>
+
+                    <div id="contador-imagenes" class="contador-imagenes">
+                        0 de 5 imágenes seleccionadas
+                    </div>
+
+                    {% if imagen_form.imagen.errors %}
+                        <div class="error-formulario">
+                            {{ imagen_form.imagen.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+            </div>
+
+            <div class="publicar-final">
+
+                <div class="publicar-mensaje">
+                    <div>
+                        <strong>
+                            Todo objeto merece una segunda oportunidad.
+                        </strong>
+                        <p>
+                            Al publicar también contribuyes
+                            al impacto de la comunidad.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="acciones-publicar">
+                    <a
+                        class="boton boton-secundario"
+                        href="{% url 'inicio' %}"
+                    >
+                        Cancelar
+                    </a>
+
+                    <button
+                        class="boton boton-principal boton-publicar-final"
+                        type="submit"
+                    >
+                        Publicar objeto
+                    </button>
+                </div>
+
+            </div>
+
+        </form>
+
+    </section>
+
+    <script>
+        const inputImagenes = document.getElementById("id_imagen");
+        const contadorImagenes = document.getElementById("contador-imagenes");
+
+        if (inputImagenes) {
+            inputImagenes.addEventListener("change", function () {
+                const cantidad = this.files.length;
+
+                if (cantidad > 5) {
+                    alert("Solo puedes seleccionar un máximo de 5 imágenes.");
+                    this.value = "";
+                    contadorImagenes.textContent =
+                        "0 de 5 imágenes seleccionadas";
+                    return;
+                }
+
+                contadorImagenes.textContent =
+                    `${cantidad} de 5 imágenes seleccionadas`;
+            });
+        }
+    </script>
+
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+
+    <script
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+    </script>
+
+    <script>
+        const contenedorMapa = document.getElementById("mapa-publicar");
+        const campoUbicacion = document.getElementById("id_ubicacion");
+        const campoLatitud = document.getElementById("id_latitud");
+        const campoLongitud = document.getElementById("id_longitud");
+
+        if (contenedorMapa && window.L) {
+            const latitudInicial = 19.8525794;
+            const longitudInicial = -98.9592703;
+
+            const mapaPublicar = L.map(contenedorMapa).setView(
+                [latitudInicial, longitudInicial],
+                12
+            );
+
+            L.tileLayer(
+                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+                    attribution: "&copy; OpenStreetMap contributors"
+                }
+            ).addTo(mapaPublicar);
+
+            const marcador = L.marker(
+                [latitudInicial, longitudInicial],
+                { draggable: true }
+            ).addTo(mapaPublicar);
+
+            function guardarCoordenadas() {
+                const posicion = marcador.getLatLng();
+                campoLatitud.value = posicion.lat;
+                campoLongitud.value = posicion.lng;
+            }
+
+            guardarCoordenadas();
+
+            marcador.bindPopup(
+                "Mueve el marcador para ajustar la ubicación."
+            ).openPopup();
+
+            marcador.on("dragend", guardarCoordenadas);
+
+            let temporizadorUbicacion;
+
+            if (campoUbicacion) {
+                campoUbicacion.addEventListener("input", function () {
+                    clearTimeout(temporizadorUbicacion);
+
+                    temporizadorUbicacion = setTimeout(async function () {
+                        const ubicacion = campoUbicacion.value.trim();
+
+                        if (!ubicacion) {
+                            return;
+                        }
+
+                        try {
+                            const respuesta = await fetch(
+                                "https://nominatim.openstreetmap.org/search?q="
+                                + encodeURIComponent(ubicacion)
+                                + "&format=json&limit=1"
+                            );
+                            const datos = await respuesta.json();
+
+                            if (!datos.length) {
+                                return;
+                            }
+
+                            const coordenadas = [
+                                Number(datos[0].lat),
+                                Number(datos[0].lon)
+                            ];
+
+                            mapaPublicar.setView(coordenadas, 14);
+                            marcador.setLatLng(coordenadas);
+                            guardarCoordenadas();
+                        } catch (error) {
+                            console.error(
+                                "No se pudo obtener la ubicación:",
+                                error
+                            );
+                        }
+                    }, 800);
+                });
+            }
+        }
+    </script>
+
+{% endblock %}
