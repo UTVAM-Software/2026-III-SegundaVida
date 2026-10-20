@@ -1,5 +1,10 @@
 from django.contrib import admin
 from .models import Objeto, LugarSegundaVida
+from django.contrib import admin
+from .models import Categoria
+
+admin.site.register(Categoria)
+
 
 admin.site.register(LugarSegundaVida)
 

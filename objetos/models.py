@@ -7,12 +7,10 @@ class Categoria(models.Model):
         max_length=50,
         unique=True
     )
-
     descripcion = models.CharField(
         max_length=200,
         blank=True
     )
-
     activa = models.BooleanField(default=True)
 
     class Meta:
@@ -25,7 +23,6 @@ class Categoria(models.Model):
 
 
 class Objeto(models.Model):
-
     ACCIONES = [
         ("donar", "Donar"),
         ("intercambiar", "Intercambiar"),
@@ -41,7 +38,10 @@ class Objeto(models.Model):
         ("danado", "Dañado"),
     ]
 
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE
+    )
 
     nombre = models.CharField(max_length=150)
     descripcion = models.TextField()
@@ -90,7 +90,6 @@ class Objeto(models.Model):
 
 
 class ImagenObjeto(models.Model):
-
     objeto = models.ForeignKey(
         Objeto,
         on_delete=models.CASCADE,
@@ -110,7 +109,6 @@ class ImagenObjeto(models.Model):
 
 
 class LugarSegundaVida(models.Model):
-
     TIPOS = [
         ("taller", "Taller"),
         ("centro_acopio", "Centro de acopio"),
@@ -120,7 +118,6 @@ class LugarSegundaVida(models.Model):
     ]
 
     nombre = models.CharField(max_length=150)
-
     descripcion = models.TextField()
 
     tipo = models.CharField(
@@ -129,9 +126,7 @@ class LugarSegundaVida(models.Model):
     )
 
     categorias = models.JSONField(default=list)
-
     servicios = models.TextField()
-
     ubicacion = models.CharField(max_length=255)
 
     telefono = models.CharField(
