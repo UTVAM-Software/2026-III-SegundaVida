@@ -1,17 +1,16 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class Categoria(models.Model):
     nombre = models.CharField(
         max_length=50,
         unique=True
     )
-
     descripcion = models.CharField(
         max_length=200,
         blank=True
     )
-
     activa = models.BooleanField(default=True)
 
     class Meta:
@@ -19,9 +18,10 @@ class Categoria(models.Model):
         verbose_name_plural = "Categorías"
         ordering = ["nombre"]
 
-    def _str_(self):
+    def __str__(self):
         return self.nombre
-    
+
+
 class Objeto(models.Model):
     ACCIONES = [
         ("donar", "Donar"),
@@ -38,16 +38,19 @@ class Objeto(models.Model):
         ("danado", "Dañado"),
     ]
 
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE
+    )
 
     nombre = models.CharField(max_length=150)
     descripcion = models.TextField()
 
     categoria = models.ForeignKey(
-    Categoria,
-    on_delete=models.PROTECT,
-    related_name="objetos"
-)
+        Categoria,
+        on_delete=models.PROTECT,
+        related_name="objetos"
+    )
 
     estado = models.CharField(
         max_length=20,
@@ -67,8 +70,8 @@ class Objeto(models.Model):
     )
 
     latitud = models.FloatField(
-    null=True,
-    blank=True
+        null=True,
+        blank=True
     )
 
     longitud = models.FloatField(
@@ -85,8 +88,8 @@ class Objeto(models.Model):
     def __str__(self):
         return self.nombre
 
-class ImagenObjeto(models.Model):
 
+class ImagenObjeto(models.Model):
     objeto = models.ForeignKey(
         Objeto,
         on_delete=models.CASCADE,
@@ -104,8 +107,8 @@ class ImagenObjeto(models.Model):
     def __str__(self):
         return f"Imagen de {self.objeto.nombre}"
 
-class LugarSegundaVida(models.Model):
 
+class LugarSegundaVida(models.Model):
     TIPOS = [
         ("taller", "Taller"),
         ("centro_acopio", "Centro de acopio"),
@@ -115,7 +118,6 @@ class LugarSegundaVida(models.Model):
     ]
 
     nombre = models.CharField(max_length=150)
-
     descripcion = models.TextField()
 
     tipo = models.CharField(
@@ -124,9 +126,7 @@ class LugarSegundaVida(models.Model):
     )
 
     categorias = models.JSONField(default=list)
-
     servicios = models.TextField()
-
     ubicacion = models.CharField(max_length=255)
 
     telefono = models.CharField(

@@ -1,0 +1,286 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Mis objetos | Segunda Vida
+{% endblock %}
+
+{% block content %}
+
+<section class="mis-objetos">
+
+    <!-- ENCABEZADO -->
+    <header class="mis-objetos-header">
+
+        <div>
+            <span class="seccion-etiqueta">
+                MI ESPACIO
+            </span>
+
+            <h1>
+                Mis objetos
+            </h1>
+
+            <p>
+                Aquí puedes ver los objetos que has
+                compartido en Segunda Vida.
+            </p>
+        </div>
+
+        <a
+            href="{% url 'publicar_objeto' %}"
+            class="boton boton-principal"
+        >
+            <i
+                data-lucide="plus"
+                class="lucide-icon"
+                aria-hidden="true"
+            ></i>
+
+            Publicar objeto
+        </a>
+
+    </header>
+
+
+    {% if objetos %}
+
+        <!-- RESUMEN -->
+        <div class="mis-objetos-resumen">
+
+            <div class="resumen-objetos">
+
+                <div class="resumen-icono">
+                    <i
+                        data-lucide="package"
+                        class="lucide-icon"
+                        aria-hidden="true"
+                    ></i>
+                </div>
+
+                <div>
+                    <strong>{{ objetos|length }}</strong>
+
+                    <span>
+                        {% if objetos|length == 1 %}
+                            objeto publicado
+                        {% else %}
+                            objetos publicados
+                        {% endif %}
+                    </span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- OBJETOS -->
+        <section class="mis-objetos-grid">
+
+            {% for objeto in objetos %}
+
+                <article class="tarjeta-objeto">
+
+                    <!-- IMAGEN -->
+                    <div class="objeto-imagen">
+
+                        {% with imagen=objeto.imagenes.first %}
+
+                            {% if imagen %}
+
+                                <img
+                                    src="{{ imagen.imagen.url }}"
+                                    alt="{{ objeto.nombre }}"
+                                >
+
+                            {% else %}
+
+                                <div class="objeto-imagen-vacia">
+
+                                    <i
+                                        data-lucide="package"
+                                        class="lucide-icon"
+                                        aria-hidden="true"
+                                    ></i>
+
+                                </div>
+
+                            {% endif %}
+
+                        {% endwith %}
+
+                    </div>
+
+
+                    <!-- CONTENIDO -->
+                    <div class="objeto-contenido">
+
+                        <div class="objeto-encabezado">
+
+                            <span class="objeto-categoria">
+                                {{ objeto.get_categoria_display }}
+                            </span>
+
+                            {% if objeto.disponible %}
+
+                                <span class="estado-objeto disponible">
+                                    <span class="estado-punto"></span>
+                                    Disponible
+                                </span>
+
+                            {% else %}
+
+                                <span class="estado-objeto no-disponible">
+                                    <span class="estado-punto"></span>
+                                    No disponible
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <h2>
+                            {{ objeto.nombre }}
+                        </h2>
+
+
+                        <p class="objeto-descripcion">
+                            {{ objeto.descripcion|truncatechars:115 }}
+                        </p>
+
+
+                        <div class="objeto-meta">
+
+                            <span>
+
+                                <i
+                                    data-lucide="tag"
+                                    class="lucide-icon"
+                                    aria-hidden="true"
+                                ></i>
+
+                                {{ objeto.get_accion_display }}
+
+                            </span>
+
+
+                            {% if objeto.ubicacion %}
+
+                                <span>
+
+                                    <i
+                                        data-lucide="map-pin"
+                                        class="lucide-icon"
+                                        aria-hidden="true"
+                                    ></i>
+
+                                    {{ objeto.ubicacion }}
+
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <a
+                            href="{% url 'detalle_objeto' objeto.id %}"
+                            class="boton boton-secundario boton-ver-objeto"
+                        >
+
+                            Ver detalles
+
+                            <i
+                                data-lucide="arrow-right"
+                                class="lucide-icon"
+                                aria-hidden="true"
+                            ></i>
+
+                        </a>
+
+                    </div>
+
+                </article>
+
+            {% endfor %}
+
+        </section>
+
+
+    {% else %}
+
+        <!-- ESTADO VACÍO -->
+        <article class="estado-vacio mis-objetos-vacio">
+
+            <div class="estado-vacio-icono">
+
+                <i
+                    data-lucide="package-open"
+                    class="lucide-icon"
+                    aria-hidden="true"
+                ></i>
+
+            </div>
+
+
+            <span class="seccion-etiqueta">
+                TODAVÍA NO HAY NADA AQUÍ
+            </span>
+
+
+            <h2>
+                Aún no tienes objetos publicados
+            </h2>
+
+
+            <p>
+                Comparte algo que ya no necesites y dale
+                una segunda vida. Puede ser útil para alguien más.
+            </p>
+
+
+            <a
+                href="{% url 'publicar_objeto' %}"
+                class="boton boton-principal"
+            >
+
+                <i
+                    data-lucide="plus"
+                    class="lucide-icon"
+                    aria-hidden="true"
+                ></i>
+
+                Publicar mi primer objeto
+
+            </a>
+
+        </article>
+
+    {% endif %}
+
+
+    <!-- REGRESAR -->
+    <div class="mis-objetos-footer">
+
+        <a
+            href="{% url 'inicio' %}"
+            class="enlace-regresar"
+        >
+
+            <i
+                data-lucide="arrow-left"
+                class="lucide-icon"
+                aria-hidden="true"
+            ></i>
+
+            Volver al inicio
+
+        </a>
+
+    </div>
+
+</section>
+
+{% endblock %}
+

@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Editar objeto | Segunda Vida
+{% endblock %}
+
+{% block content %}
+
+    <section class="tarjeta">
+
+        <h1> Editar objeto</h1>
+
+        <form
+            method="POST"
+            enctype="multipart/form-data"
+        >
+
+            {% csrf_token %}
+
+            {{ formulario.as_p }}
+
+            <hr>
+
+            <h2> Imágenes</h2>
+
+            {% if imagenes %}
+
+                <p>
+                    Selecciona las imágenes que quieras eliminar.
+                </p>
+
+                {% for imagen in imagenes %}
+
+                    <div>
+                        <img
+                            src="{{ imagen.imagen.url }}"
+                            alt="Imagen de {{ objeto.nombre }}"
+                            style="max-width: 200px;"
+                        >
+
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="eliminar_imagenes"
+                                value="{{ imagen.id }}"
+                            >
+                            Eliminar esta imagen
+                        </label>
+                    </div>
+
+                    <br>
+
+                {% endfor %}
+
+            {% else %}
+
+                <p>
+                    Este objeto todavía no tiene imágenes.
+                </p>
+
+            {% endif %}
+
+            <hr>
+
+            <label for="{{ imagen_form.imagen.id_for_label }}">
+                 <strong>Agregar imágenes</strong>
+            </label>
+
+            <p>
+                Puedes tener hasta 5 imágenes por objeto.
+            </p>
+
+            {{ imagen_form.imagen }}
+
+            <br><br>
+
+            <button
+                class="boton"
+                type="submit"
+            >
+                Guardar cambios
+            </button>
+
+        </form>
+
+        <br>
+
+        <a href="{% url 'detalle_objeto' objeto.id %}">
+            ← Cancelar
+        </a>
+
+    </section>
+
+{% endblock %}
