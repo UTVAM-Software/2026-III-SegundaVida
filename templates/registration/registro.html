@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Crear cuenta | Segunda Vida
+{% endblock %}
+
+{% block content %}
+
+    <section class="tarjeta">
+
+        <h1> Crear cuenta</h1>
+
+        <p>
+            Únete a Segunda Vida y ayuda a que los objetos
+            tengan una nueva oportunidad.
+        </p>
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            {{ formulario.as_p }}
+
+            <button
+                class="boton"
+                type="submit"
+            >
+                Crear cuenta
+            </button>
+
+        </form>
+
+        <br>
+
+        <p>
+            ¿Ya tienes una cuenta?
+            <a href="{% url 'login' %}">
+                Iniciar sesión
+            </a>
+        </p>
+
+        <a href="{% url 'inicio' %}">
+            ← Volver al inicio
+        </a>
+
+    </section>
+
+{% endblock %}

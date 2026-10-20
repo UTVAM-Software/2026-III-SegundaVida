@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}
+Editar perfil | Segunda Vida
+{% endblock %}
+
+{% block content %}
+
+<section class="editar-perfil">
+
+<!-- ENCABEZADO -->
+<div class="editar-perfil-encabezado">
+
+    <span class="seccion-etiqueta">
+        MI PERFIL
+    </span>
+
+    <h1>Editar mi perfil</h1>
+
+    <p>
+        Mantén actualizada la información que quieres
+        compartir con la comunidad de Segunda Vida.
+    </p>
+
+</div>
+
+
+<!-- FORMULARIO -->
+<div class="formulario-perfil">
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <div class="campo-formulario">
+
+            <label for="{{ formulario.nombre.id_for_label }}">
+                 Nombre
+            </label>
+
+            {{ formulario.nombre }}
+
+            {% if formulario.nombre.errors %}
+                <div class="error-formulario">
+                    {{ formulario.nombre.errors }}
+                </div>
+            {% endif %}
+
+        </div>
+
+
+        <div class="campo-formulario">
+
+            <label for="{{ formulario.telefono.id_for_label }}">
+                 Teléfono
+            </label>
+
+            {{ formulario.telefono }}
+
+            {% if formulario.telefono.errors %}
+                <div class="error-formulario">
+                    {{ formulario.telefono.errors }}
+                </div>
+            {% endif %}
+
+        </div>
+
+
+        <div class="campo-formulario">
+
+            <label for="{{ formulario.ubicacion.id_for_label }}">
+                 Ubicación
+            </label>
+
+            {{ formulario.ubicacion }}
+
+            {% if formulario.ubicacion.errors %}
+                <div class="error-formulario">
+                    {{ formulario.ubicacion.errors }}
+                </div>
+            {% endif %}
+
+        </div>
+
+
+        <div class="campo-formulario">
+
+            <label for="{{ formulario.biografia.id_for_label }}">
+                 Biografía
+            </label>
+
+            {{ formulario.biografia }}
+
+            <small>
+                Cuéntale a la comunidad un poco sobre ti.
+            </small>
+
+            {% if formulario.biografia.errors %}
+                <div class="error-formulario">
+                    {{ formulario.biografia.errors }}
+                </div>
+            {% endif %}
+
+        </div>
+
+
+        <!-- BOTONES -->
+        <div class="acciones-formulario">
+
+            <button
+                class="boton boton-principal"
+                type="submit"
+            >
+                <i data-lucide="check" class="lucide-icon" aria-hidden="true"></i>
+                Guardar cambios
+            </button>
+
+            <a
+                class="boton boton-secundario"
+                href="{% url 'perfil' %}"
+            >
+                Cancelar
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+</section>
+
+{% endblock %}

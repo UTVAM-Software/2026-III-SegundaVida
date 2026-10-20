@@ -24,7 +24,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 SECRET_KEY = '1m-i)n_h&bgzg!440zwazr*h-vvsn(4$-@9xw%=@xo9_=%%7*&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     "127.0.0.1",
@@ -68,7 +68,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                "usuarios.context_processors.notificaciones_no_leidas",
+               
             ],
         },
     },

@@ -1,0 +1,272 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Mis solicitudes | Segunda Vida
+{% endblock %}
+
+{% block content %}
+
+    <section class="solicitudes-pagina">
+
+    <header class="encabezado-solicitudes">
+        <div>
+            <span class="seccion-etiqueta">MI ACTIVIDAD</span>
+            <h1>Mis solicitudes</h1>
+            <p>
+                Da seguimiento a los objetos que has solicitado
+                y a los acuerdos realizados.
+            </p>
+        </div>
+
+        <a
+            href="{% url 'lista_objetos' %}"
+            class="boton boton-principal"
+        >
+            + Buscar objetos
+        </a>
+    </header>
+
+    {% if solicitudes %}
+
+        <div class="lista-solicitudes">
+
+            {% for solicitud in solicitudes %}
+
+                <article class="tarjeta-solicitud">
+
+                    <div class="solicitud-encabezado">
+
+                        <div class="solicitud-icono">
+                            <i data-lucide="recycle" class="lucide-icon" aria-hidden="true"></i>
+                        </div>
+
+                        <div class="solicitud-titulo">
+                            <span class="solicitud-etiqueta">
+                                SOLICITUD
+                            </span>
+
+                            <h2>{{ solicitud.objeto.nombre }}</h2>
+
+                            <p>
+                                Publicado por
+                                <strong>{{ solicitud.objeto.usuario.username }}</strong>
+                            </p>
+                        </div>
+
+                        <div class="estado-solicitud estado-{{ solicitud.estado }}">
+                            {{ solicitud.get_estado_display }}
+                        </div>
+
+                    </div>
+
+                    <div class="solicitud-contenido">
+
+                        <div class="informacion-solicitud">
+
+                            <div class="dato-solicitud">
+                                <span class="dato-icono"><i data-lucide="calendar-days" class="lucide-icon" aria-hidden="true"></i></span>
+
+                                <div>
+                                    <span class="dato-label">
+                                        Fecha de solicitud
+                                    </span>
+
+                                    <strong>{{ solicitud.fecha_solicitud }}</strong>
+                                </div>
+                            </div>
+
+                            {% if solicitud.mensaje %}
+                                <div class="dato-solicitud">
+                                    <span class="dato-icono"><i data-lucide="message-circle" class="lucide-icon" aria-hidden="true"></i></span>
+
+                                    <div>
+                                        <span class="dato-label">
+                                            Tu mensaje
+                                        </span>
+
+                                        <p class="mensaje-solicitud">
+                                            {{ solicitud.mensaje }}
+                                        </p>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+                        {% if solicitud.estado == "aceptada" or solicitud.estado == "cumplida" or solicitud.estado == "no_cumplida" %}
+                            <div class="contacto-solicitud">
+
+                                <div class="contacto-encabezado">
+                                    <span class="contacto-icono"><i data-lucide="handshake" class="lucide-icon" aria-hidden="true"></i></span>
+
+                                    <div>
+                                        <h3>Contacto para el acuerdo</h3>
+                                        <p>
+                                            La solicitud fue aceptada.
+                                            Puedes ponerte en contacto con el propietario.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="contacto-datos">
+                                    <div>
+                                        <span>Usuario</span>
+                                        <strong>
+                                            {{ solicitud.objeto.usuario.username }}
+                                        </strong>
+                                    </div>
+
+                                    {% if solicitud.objeto.usuario.perfil.telefono %}
+                                        <div>
+                                            <span>Teléfono</span>
+                                            <strong>
+                                                {{ solicitud.objeto.usuario.perfil.telefono }}
+                                            </strong>
+                                        </div>
+                                    {% endif %}
+
+                                    {% if solicitud.objeto.usuario.perfil.ubicacion %}
+                                        <div>
+                                            <span>Ubicación</span>
+                                            <strong>
+                                                {{ solicitud.objeto.usuario.perfil.ubicacion }}
+                                            </strong>
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                            </div>
+                        {% endif %}
+
+                        {% if solicitud.estado == "aceptada" %}
+                            <div class="seguimiento-solicitud">
+
+                                <div class="seguimiento-icono"><i data-lucide="leaf" class="lucide-icon" aria-hidden="true"></i></div>
+
+                                <div class="seguimiento-texto">
+                                    <h3>¿Se realizó el acuerdo?</h3>
+                                    <p>
+                                        Cuando hayas recibido o intercambiado
+                                        el objeto, marca el resultado del acuerdo.
+                                    </p>
+                                </div>
+
+                                <div class="acciones-solicitud">
+                                    <form
+                                        method="POST"
+                                        action="{% url 'marcar_solicitud' solicitud.id 'cumplida' %}"
+                                    >
+                                        {% csrf_token %}
+                                        <button
+                                            type="submit"
+                                            class="boton boton-exito"
+                                        >
+                                            <i data-lucide="check" class="lucide-icon" aria-hidden="true"></i>
+                                            Marcar como cumplido
+                                        </button>
+                                    </form>
+
+                                    <form
+                                        method="POST"
+                                        action="{% url 'marcar_solicitud' solicitud.id 'no_cumplida' %}"
+                                    >
+                                        {% csrf_token %}
+                                        <button
+                                            type="submit"
+                                            class="boton boton-secundario"
+                                        >
+                                            Marcar como no cumplido
+                                        </button>
+                                    </form>
+                                </div>
+
+                            </div>
+                        {% endif %}
+
+                        {% if solicitud.estado == "cumplida" or solicitud.estado == "no_cumplida" %}
+                            <div class="valoracion-solicitud">
+
+                                {% if not solicitud.valoraciones_del_usuario %}
+                                    <div class="valoracion-icono"><i data-lucide="star" class="lucide-icon" aria-hidden="true"></i></div>
+
+                                    <div>
+                                        <h3>¿Cómo fue tu experiencia?</h3>
+                                        <p>
+                                            Tu valoración ayuda a construir
+                                            una comunidad de confianza.
+                                        </p>
+                                    </div>
+
+                                    <a
+                                        href="{% url 'valorar_solicitud' solicitud.id %}"
+                                        class="boton boton-valoracion"
+                                    >
+                                        <i data-lucide="star" class="lucide-icon" aria-hidden="true"></i>
+                                        Valorar a
+                                        {{ solicitud.objeto.usuario.username }}
+                                    </a>
+                                {% else %}
+                                    <div class="valoracion-completada">
+                                        <span><i data-lucide="star" class="lucide-icon" aria-hidden="true"></i></span>
+
+                                        <div>
+                                            <strong>
+                                                Ya has valorado a esta persona.
+                                            </strong>
+                                            <p>
+                                                Gracias por ayudar a construir
+                                                una comunidad de confianza.
+                                            </p>
+                                        </div>
+                                    </div>
+                                {% endif %}
+
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+                    <footer class="solicitud-pie">
+                        <a
+                            href="{% url 'detalle_objeto' solicitud.objeto.id %}"
+                            class="boton boton-outline"
+                        >
+                            Ver objeto →
+                        </a>
+                    </footer>
+
+                </article>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <article class="solicitudes-vacio">
+            <div class="vacio-icono"><i data-lucide="leaf" class="lucide-icon" aria-hidden="true"></i></div>
+
+            <span class="seccion-etiqueta">
+                TODAVÍA NO HAY ACTIVIDAD
+            </span>
+
+            <h2>No tienes solicitudes todavía</h2>
+
+            <p>
+                Busca un objeto que pueda tener una segunda vida
+                y envía tu primera solicitud.
+            </p>
+
+            <a
+                class="boton boton-principal"
+                href="{% url 'lista_objetos' %}"
+            >
+                Buscar objetos
+            </a>
+        </article>
+
+    {% endif %}
+
+    </section>
+
+{% endblock %}
