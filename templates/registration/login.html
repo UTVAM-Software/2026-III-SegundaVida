@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Iniciar sesión | Segunda Vida
+{% endblock %}
+
+{% block content %}
+
+    <section class="tarjeta">
+
+        <h1> Segunda Vida</h1>
+
+        <h2>Iniciar sesión</h2>
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <button
+                class="boton"
+                type="submit"
+            >
+                Iniciar sesión
+            </button>
+
+        </form>
+
+        <br>
+
+        <a href="{% url 'inicio' %}">
+            ← Volver al inicio
+        </a>
+
+    </section>
+
+{% endblock %}

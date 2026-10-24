@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+
+{% block title %}
+Segunda Vida
+{% endblock %}
+
+{% block content %}
+
+<section class="inicio">
+
+
+
+<div class="hero-inicio">
+
+    <div class="hero-icono">
+        <i data-lucide="recycle" class="lucide-icon" aria-hidden="true"></i>
+    </div>
+
+    <p class="hero-etiqueta">
+        UNA SEGUNDA OPORTUNIDAD PARA LAS COSAS
+    </p>
+
+    <h1>
+        Antes de tirarlo,<br>
+        <span>descubre si alguien puede aprovecharlo.</span>
+    </h1>
+
+    <p class="hero-descripcion">
+        Dona, intercambia, repara, reutiliza o transforma objetos
+        que todavía pueden tener una segunda vida.
+    </p>
+
+    <div class="acciones-inicio">
+
+        <a
+            class="boton boton-principal"
+            href="{% url 'publicar_objeto' %}"
+        >
+            <i data-lucide="package-plus" class="lucide-icon" aria-hidden="true"></i>
+            Publicar objeto
+        </a>
+
+        <a
+            class="boton boton-secundario"
+            href="{% url 'lista_objetos' %}"
+        >
+            <i data-lucide="search" class="lucide-icon" aria-hidden="true"></i>
+             Buscar objetos
+        </a>
+
+    </div>
+
+</div>
+
+
+
+
+<section class="seccion-impacto">
+
+    <div class="encabezado-seccion">
+
+        <p class="seccion-etiqueta">
+            IMPACTO DE LA COMUNIDAD
+        </p>
+
+        <h2>
+            Pequeñas acciones,
+            <span>grandes cambios.</span>
+        </h2>
+
+        <p>
+            Cada objeto que encuentra una nueva utilidad
+            representa una oportunidad para aprovechar mejor
+            nuestros recursos.
+        </p>
+
+    </div>
+
+
+    <div class="impacto-principal">
+
+        <div class="impacto-icono">
+            <i data-lucide="globe-2" class="lucide-icon" aria-hidden="true"></i>
+        </div>
+
+        <div class="impacto-numero">
+            {{ material_reutilizado_comunidad }} kg
+        </div>
+
+        <div class="impacto-titulo">
+            de material ha permanecido en uso
+        </div>
+
+        <small>
+            Estimación basada en los acuerdos cumplidos.
+        </small>
+
+    </div>
+
+
+    <div class="impacto-categorias">
+
+        <div class="encabezado-categorias">
+
+            <h3>
+                 Material reutilizado por categoría
+            </h3>
+
+        </div>
+
+
+        {% if material_por_categoria %}
+
+            <div class="categorias-impacto">
+
+                {% for categoria, material in material_por_categoria.items %}
+
+                    <div class="categoria-impacto">
+
+                        <div class="categoria-icono">
+                            <i data-lucide="recycle" class="lucide-icon" aria-hidden="true"></i>
+                        </div>
+
+                        <strong>
+                            {{ categoria }}
+                        </strong>
+
+                        <span>
+                            {{ material }} kg
+                        </span>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="impacto-vacio">
+
+                <span><i data-lucide="leaf" class="lucide-icon" aria-hidden="true"></i></span>
+
+                <p>
+                    Todavía no hay acuerdos cumplidos
+                    para mostrar.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+
+
+
+{% if user.is_authenticated %}
+
+    <section class="bienvenida-usuario">
+
+        <div>
+
+            <span class="saludo-pequeno">
+                ¡Qué bueno verte por aquí! 
+            </span>
+
+            <h2>
+                Hola, {{ user.username }}
+            </h2>
+
+            <p>
+                ¿Qué quieres hacer hoy?
+            </p>
+
+        </div>
+
+
+        <div class="acciones-usuario">
+
+            <a
+                class="boton boton-secundario"
+                href="{% url 'perfil' %}"
+            >
+                <i data-lucide="user-round" class="lucide-icon" aria-hidden="true"></i>
+                 Mi perfil
+            </a>
+
+        </div>
+
+    </section>
+
+{% else %}
+
+    <section class="acceso-visitante">
+
+        <div>
+
+            <h2>
+                Forma parte de la comunidad 
+            </h2>
+
+            <p>
+                Crea una cuenta para publicar objetos,
+                solicitar intercambios y comenzar a dar
+                segundas oportunidades.
+            </p>
+
+        </div>
+
+        <div class="acciones-visitante">
+
+            <a
+                class="boton boton-principal"
+                href="{% url 'registro' %}"
+            >
+                <i data-lucide="user-plus" class="lucide-icon" aria-hidden="true"></i>
+                Crear cuenta
+            </a>
+
+            <a
+                class="boton boton-secundario"
+                href="{% url 'login' %}"
+            >
+                <i data-lucide="log-in" class="lucide-icon" aria-hidden="true"></i>
+                Iniciar sesión
+            </a>
+
+        </div>
+
+    </section>
+
+{% endif %}
+
+</section>
+
+{% endblock %}

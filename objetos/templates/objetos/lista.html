@@ -1,0 +1,347 @@
+{% extends "base.html" %}
+
+{% block title %}
+Objetos disponibles | Segunda Vida
+{% endblock %}
+
+{% block content %}
+
+<section class="lista-objetos">
+
+
+
+<div class="encabezado-lista">
+
+    <div>
+
+        <p class="seccion-etiqueta">
+            EXPLORA LA COMUNIDAD
+        </p>
+
+        <h1>
+            Objetos disponibles
+        </h1>
+
+        <p>
+            Encuentra algo que pueda tener una segunda vida.
+        </p>
+
+    </div>
+
+    <a
+        class="boton boton-principal"
+        href="{% url 'publicar_objeto' %}"
+    >
+        + Publicar objeto
+    </a>
+
+</div>
+
+
+
+
+<section class="filtros-objetos">
+
+    <form method="GET" class="formulario-filtros">
+
+        <div class="buscador">
+
+            <label for="busqueda">
+                Buscar
+            </label>
+
+            <input
+                id="busqueda"
+                type="text"
+                name="q"
+                placeholder=" ¿Qué estás buscando?"
+                value="{{ busqueda }}"
+            >
+
+        </div>
+
+
+        <div class="filtro">
+
+            <label for="categoria">
+                Categoría
+            </label>
+
+            <select id="categoria" name="categoria">
+
+                <option value="">
+                    Todas
+                </option>
+
+                {% for categoria_item in categorias %}
+
+                        <option value=
+                           "{{ categoria_item.id }}"
+                         {% if categoria == categoria_item.id|stringformat:"s"
+                            %}selected{% endif %}>
+                        
+                    
+                         {{ categoria_item.nombre }}
+                     </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+
+        <div class="filtro">
+
+            <label for="estado">
+                Estado
+            </label>
+
+            <select id="estado" name="estado">
+
+                <option value="">
+                    Todos
+                </option>
+
+                {% for valor, nombre in estados %}
+
+                    <option
+                        value="{{ valor }}"
+                        {% if estado == valor %}selected{% endif %}
+                    >
+                        {{ nombre }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+
+        <div class="filtro">
+
+            <label for="accion">
+                Acción
+            </label>
+
+            <select id="accion" name="accion">
+
+                <option value="">
+                    Todas
+                </option>
+
+                {% for valor, nombre in acciones %}
+
+                    <option
+                        value="{{ valor }}"
+                        {% if accion == valor %}selected{% endif %}
+                    >
+                        {{ nombre }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+
+        <div class="acciones-filtros">
+
+            <button
+                class="boton boton-principal"
+                type="submit"
+            >
+                 Buscar
+            </button>
+
+            {% if busqueda or categoria or estado or accion %}
+
+                <a
+                    class="boton boton-ligero"
+                    href="{% url 'lista_objetos' %}"
+                >
+                     Limpiar
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    </form>
+
+</section>
+
+
+
+
+{% if objetos %}
+
+    <div class="resultados-encabezado">
+
+        <span>
+            Objetos disponibles
+        </span>
+
+        <strong>
+            {{ objetos|length }}
+        </strong>
+
+    </div>
+
+
+    <section class="tarjetas-grid">
+
+        {% for objeto in objetos %}
+
+            <article class="tarjeta-item tarjeta-objeto">
+
+                
+
+                {% with imagen=objeto.imagenes.first %}
+
+                    {% if imagen %}
+
+                        <div class="contenedor-imagen-objeto">
+
+                            <img
+                                class="imagen-objeto"
+                                src="{{ imagen.imagen.url }}"
+                                alt="{{ objeto.nombre }}"
+                            >
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="imagen-vacia">
+
+                            <span><i data-lucide="image-off" class="lucide-icon" aria-hidden="true"></i></span>
+
+                            <small>
+                                Sin imagen
+                            </small>
+
+                        </div>
+
+                    {% endif %}
+
+                {% endwith %}
+
+
+                
+
+                <div class="tarjeta-contenido">
+
+                    <div class="objeto-encabezado">
+
+                        <span class="etiqueta-categoria">
+                            {{ objeto.categoria.nombre }}
+                        </span>
+
+                    </div>
+
+
+                    <h2>
+                        {{ objeto.nombre }}
+                    </h2>
+
+
+                    <p class="descripcion-objeto">
+                        {{ objeto.descripcion }}
+                    </p>
+
+
+                    
+
+                    <div class="etiquetas-objeto">
+
+                        <span class="etiqueta estado-{{ objeto.estado }}">
+                             {{ objeto.get_estado_display }}
+                        </span>
+
+                        <span class="etiqueta accion-{{ objeto.accion }}">
+                             {{ objeto.get_accion_display }}
+                        </span>
+
+                    </div>
+
+
+                    
+
+                    <div class="ubicacion-objeto">
+
+                        <span>
+                            
+                        </span>
+
+                        <p>
+                            {{ objeto.ubicacion }}
+                        </p>
+
+                    </div>
+
+
+                    
+
+                    <a
+                        class="boton boton-ver"
+                        href="{% url 'detalle_objeto' objeto.id %}"
+                    >
+                        Ver detalles
+                        <span>→</span>
+                    </a>
+
+                </div>
+
+            </article>
+
+        {% endfor %}
+
+    </section>
+
+{% else %}
+
+    <section class="sin-resultados">
+
+        <div class="sin-resultados-icono">
+            
+        </div>
+
+        <h2>
+            No encontramos objetos
+        </h2>
+
+        <p>
+            Prueba cambiando los filtros o busca algo diferente.
+        </p>
+
+        {% if busqueda or categoria or estado or accion %}
+
+            <a
+                class="boton boton-secundario"
+                href="{% url 'lista_objetos' %}"
+            >
+                Limpiar filtros
+            </a>
+
+        {% endif %}
+
+    </section>
+
+{% endif %}
+
+
+
+
+<div class="volver">
+    <a href="{% url 'inicio' %}">
+        ← Volver al inicio
+    </a>
+</div>
+
+
+</section>
+
+{% endblock %}

@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}Valorar interacción | Segunda Vida{% endblock %}
+
+{% block content %}
+
+<section class="valoracion-pagina">
+
+<!-- Encabezado -->
+<div class="valoracion-encabezado">
+
+    <div class="valoracion-icono">
+        <i data-lucide="star" aria-hidden="true"></i>
+    </div>
+
+    <div>
+        <span class="texto-seccion">REPUTACIÓN</span>
+
+        <h1>Valorar interacción</h1>
+
+        <p>
+            Comparte cómo fue tu experiencia con esta persona.
+        </p>
+    </div>
+
+</div>
+
+
+<div class="valoracion-grid">
+
+    <!-- Resumen de la interacción -->
+    <aside class="tarjeta resumen-valoracion">
+
+        <span class="resumen-etiqueta">
+            INTERACCIÓN
+        </span>
+
+        <h2>{{ solicitud.objeto.nombre }}</h2>
+
+        <div class="persona-valorada">
+
+            <div class="avatar-valoracion">
+                <i data-lucide="user-round" aria-hidden="true"></i>
+            </div>
+
+            <div>
+                <span>Estás valorando a</span>
+                <strong>{{ usuario_valorado.username }}</strong>
+            </div>
+
+        </div>
+
+
+        {% if solicitud.estado == "cumplida" %}
+
+            <div class="estado-interaccion estado-cumplida">
+                <i data-lucide="circle-check" aria-hidden="true"></i>
+
+                <div>
+                    <strong>Interacción cumplida</strong>
+                    <span>El acuerdo fue marcado como cumplido.</span>
+                </div>
+            </div>
+
+        {% elif solicitud.estado == "no_cumplida" %}
+
+            <div class="estado-interaccion estado-no-cumplida">
+                <i data-lucide="circle-x" aria-hidden="true"></i>
+
+                <div>
+                    <strong>Interacción no cumplida</strong>
+                    <span>El acuerdo fue marcado como no cumplido.</span>
+                </div>
+            </div>
+
+        {% endif %}
+
+    </aside>
+
+
+    <!-- Formulario -->
+    <div class="tarjeta formulario-valoracion">
+
+        <div class="formulario-valoracion-encabezado">
+
+            <i data-lucide="message-circle-heart" aria-hidden="true"></i>
+
+            <div>
+                <h2>¿Cómo fue tu experiencia?</h2>
+
+                <p>
+                    Tu valoración ayuda a construir una comunidad
+                    más confiable.
+                </p>
+            </div>
+
+        </div>
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <div class="campos-valoracion">
+
+                {{ formulario.as_p }}
+
+            </div>
+
+
+            <button
+                class="boton boton-valoracion"
+                type="submit"
+            >
+                <i data-lucide="star" aria-hidden="true"></i>
+                Enviar valoración
+            </button>
+
+        </form>
+
+
+        <a
+            href="{% url 'mis_solicitudes' %}"
+            class="volver-enlace"
+        >
+            <i data-lucide="arrow-left" aria-hidden="true"></i>
+            Volver a mis solicitudes
+        </a>
+
+    </div>
+
+</div>
+
+</section>
+
+{% endblock %}

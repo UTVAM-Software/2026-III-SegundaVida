@@ -1,0 +1,270 @@
+{% extends "base.html" %}
+
+{% block title %}
+Mi perfil | Segunda Vida
+{% endblock %}
+
+{% block content %}
+
+<section class="perfil-pagina">
+
+
+<div class="perfil-hero">
+
+    <div class="perfil-avatar">
+        <i data-lucide="user-round" class="lucide-icon" aria-hidden="true"></i>
+    </div>
+
+    <div class="perfil-presentacion">
+        <span class="perfil-etiqueta">MI ESPACIO</span>
+
+        <h1>{{ perfil.nombre }}</h1>
+
+        <p class="perfil-usuario">
+            @{{ perfil.usuario.username }}
+        </p>
+
+        {% if perfil.biografia %}
+            <p class="perfil-biografia-corta">
+                {{ perfil.biografia }}
+            </p>
+        {% else %}
+            <p class="perfil-biografia-corta perfil-sin-biografia">
+                Todavía no has agregado una biografía.
+            </p>
+        {% endif %}
+    </div>
+
+    <div class="perfil-accion">
+        <a
+            class="boton boton-principal"
+            href="{% url 'editar_perfil' %}"
+        >
+             Editar perfil
+        </a>
+    </div>
+
+</div>
+
+
+
+<div class="perfil-metricas">
+
+    
+    <div class="metrica-perfil metrica-reputacion">
+
+        <div class="metrica-icono">
+            <i data-lucide="star" class="lucide-icon" aria-hidden="true"></i>
+        </div>
+
+        <div class="metrica-contenido">
+
+            <span class="metrica-etiqueta">
+                REPUTACIÓN
+            </span>
+
+            <div class="estrellas-reputacion">
+
+                {% for i in "12345" %}
+
+                    {% if forloop.counter <= perfil.reputacion %}
+                        <span class="estrella activa"><i data-lucide="star" class="lucide-icon" aria-hidden="true"></i></span>
+                    {% else %}
+                        <span class="estrella"><i data-lucide="star" class="lucide-icon" aria-hidden="true"></i></span>
+                    {% endif %}
+
+                {% endfor %}
+
+            </div>
+
+            <strong>
+                {{ perfil.reputacion }} <small>/ 5</small>
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    
+    <div class="metrica-perfil metrica-karma">
+
+        <div class="metrica-icono">
+            <i data-lucide="leaf" class="lucide-icon" aria-hidden="true"></i>
+        </div>
+
+        <div class="metrica-contenido">
+
+            <span class="metrica-etiqueta">
+                KARMA
+            </span>
+
+            <div class="hojas-karma">
+
+                {% if perfil.karma >= 1 %}
+                    <span><i data-lucide="leaf" class="lucide-icon" aria-hidden="true"></i></span>
+                {% endif %}
+
+                {% if perfil.karma >= 2 %}
+                    <span><i data-lucide="leaf" class="lucide-icon" aria-hidden="true"></i></span>
+                {% endif %}
+
+                {% if perfil.karma >= 3 %}
+                    <span><i data-lucide="leaf" class="lucide-icon" aria-hidden="true"></i></span>
+                {% endif %}
+
+                {% if perfil.karma >= 4 %}
+                    <span><i data-lucide="leaf" class="lucide-icon" aria-hidden="true"></i></span>
+                {% endif %}
+
+                {% if perfil.karma >= 5 %}
+                    <span><i data-lucide="leaf" class="lucide-icon" aria-hidden="true"></i></span>
+                {% endif %}
+
+            </div>
+
+            <strong>
+                {{ perfil.karma }}
+                <small>puntos</small>
+            </strong>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<div class="perfil-seccion">
+
+    <div class="perfil-seccion-encabezado">
+
+        <div>
+            <span class="seccion-etiqueta">
+                INFORMACIÓN
+            </span>
+
+            <h2>Datos personales</h2>
+        </div>
+
+    </div>
+
+
+    <div class="datos-perfil-grid">
+
+        <div class="dato-perfil">
+            <span class="dato-icono"><i data-lucide="user-round" class="lucide-icon" aria-hidden="true"></i></span>
+
+            <div>
+                <strong>Usuario</strong>
+                <span>{{ perfil.usuario.username }}</span>
+            </div>
+        </div>
+
+
+        <div class="dato-perfil">
+            <span class="dato-icono"><i data-lucide="mail" class="lucide-icon" aria-hidden="true"></i></span>
+
+            <div>
+                <strong>Correo electrónico</strong>
+                <span>{{ perfil.usuario.email }}</span>
+            </div>
+        </div>
+
+
+        <div class="dato-perfil">
+            <span class="dato-icono"><i data-lucide="phone" class="lucide-icon" aria-hidden="true"></i></span>
+
+            <div>
+                <strong>Teléfono</strong>
+
+                <span>
+                    {% if perfil.telefono %}
+                        {{ perfil.telefono }}
+                    {% else %}
+                        No registrado
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+
+
+        <div class="dato-perfil">
+            <span class="dato-icono"><i data-lucide="map-pin" class="lucide-icon" aria-hidden="true"></i></span>
+
+            <div>
+                <strong>Ubicación</strong>
+
+                <span>
+                    {% if perfil.ubicacion %}
+                        {{ perfil.ubicacion }}
+                    {% else %}
+                        No registrada
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<div class="perfil-seccion perfil-biografia">
+
+    <div class="perfil-seccion-encabezado">
+
+        <div>
+            <span class="seccion-etiqueta">
+                SOBRE MÍ
+            </span>
+
+            <h2>Mi historia</h2>
+        </div>
+
+    </div>
+
+    <div class="biografia-contenido">
+
+        <span class="biografia-icono">
+            <i data-lucide="leaf" class="lucide-icon" aria-hidden="true"></i>
+        </span>
+
+        <p>
+            {% if perfil.biografia %}
+                {{ perfil.biografia }}
+            {% else %}
+                Todavía no has agregado una biografía.
+                Cuéntales a los demás un poco sobre ti.
+            {% endif %}
+        </p>
+
+    </div>
+
+</div>
+
+
+
+<div class="perfil-acciones">
+
+    <a
+        class="boton boton-principal"
+        href="{% url 'editar_perfil' %}"
+    >
+         Editar perfil
+    </a>
+
+    <a
+        class="boton boton-secundario"
+        href="{% url 'inicio' %}"
+    >
+        ← Volver al inicio
+    </a>
+
+</div>
+
+</section>
+
+{% endblock %}

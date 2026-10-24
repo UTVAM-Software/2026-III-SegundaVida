@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block title %}
+Solicitar objeto | Segunda Vida
+{% endblock %}
+
+{% block content %}
+
+<section class="solicitar-pagina">
+
+<div class="solicitar-encabezado">
+
+    <div class="solicitar-icono">
+        <i data-lucide="hand-heart" aria-hidden="true"></i>
+    </div>
+
+    <div>
+        <span class="texto-seccion">SEGUNDA OPORTUNIDAD</span>
+
+        <h1>Solicitar objeto</h1>
+
+        <p>
+            Explica al propietario por qué te interesa y cómo
+            planeas darle una segunda vida.
+        </p>
+    </div>
+
+</div>
+
+
+<div class="solicitar-grid">
+
+    <aside class="tarjeta resumen-solicitud">
+
+        <span class="resumen-etiqueta">
+            OBJETO
+        </span>
+
+        <h2>{{ objeto.nombre }}</h2>
+
+
+        <div class="datos-objeto-solicitud">
+
+            <div class="dato-solicitud">
+
+                <div class="dato-solicitud-icono">
+                    <i data-lucide="repeat-2" aria-hidden="true"></i>
+                </div>
+
+                <div>
+                    <span>Acción</span>
+                    <strong>
+                        {{ objeto.get_accion_display }}
+                    </strong>
+                </div>
+
+            </div>
+
+
+            <div class="dato-solicitud">
+
+                <div class="dato-solicitud-icono">
+                    <i data-lucide="package-check" aria-hidden="true"></i>
+                </div>
+
+                <div>
+                    <span>Estado</span>
+                    <strong>
+                        {{ objeto.get_estado_display }}
+                    </strong>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        {% if objeto.descripcion %}
+
+            <div class="descripcion-objeto-solicitud">
+
+                <span>Descripción</span>
+
+                <p>
+                    {{ objeto.descripcion }}
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </aside>
+
+
+    <div class="tarjeta formulario-solicitud">
+
+        <div class="formulario-solicitud-encabezado">
+
+            <div class="formulario-solicitud-icono">
+                <i data-lucide="message-circle" aria-hidden="true"></i>
+            </div>
+
+            <div>
+
+                <h2>Cuéntale al propietario</h2>
+
+                {% if objeto.accion == "intercambiar" %}
+
+                    <p>
+                        Puedes escribir qué ofreces a cambio
+                        del objeto.
+                    </p>
+
+                {% elif objeto.accion == "reparar" %}
+
+                    <p>
+                        Explica qué reparación propones realizar
+                        y cómo planeas llevarla a cabo.
+                    </p>
+
+                {% elif objeto.accion == "piezas" %}
+
+                    <p>
+                        Explica para qué necesitas las piezas
+                        del objeto.
+                    </p>
+
+                {% elif objeto.accion == "transformar" %}
+
+                    <p>
+                        Cuéntale qué transformación tienes
+                        en mente.
+                    </p>
+
+                {% else %}
+
+                    <p>
+                        Escribe un mensaje explicando por qué
+                        te interesa el objeto.
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <div class="campos-solicitud">
+
+                {{ formulario.as_p }}
+
+            </div>
+
+
+            <button
+                class="boton boton-enviar-solicitud"
+                type="submit"
+            >
+                <i data-lucide="send" aria-hidden="true"></i>
+                Enviar solicitud
+            </button>
+
+        </form>
+
+
+        <a
+            href="{% url 'detalle_objeto' objeto.id %}"
+            class="volver-enlace cancelar-solicitud"
+        >
+            <i data-lucide="arrow-left" aria-hidden="true"></i>
+            Cancelar y volver al objeto
+        </a>
+
+    </div>
+
+</div>
+
+</section>
+
+{% endblock %}
