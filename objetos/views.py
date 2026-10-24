@@ -8,7 +8,7 @@ from urllib.parse import quote
 from urllib.request import Request, urlopen
 
 from .forms import ObjetoForm, ImagenObjetoForm
-from .models import Objeto, ImagenObjeto, LugarSegundaVida
+from .models import Objeto, Categoria, ImagenObjeto, LugarSegundaVida
 from .utils import (
     calcular_material_reutilizado_estimado,
     calcular_material_reutilizado_comunidad,
@@ -172,30 +172,14 @@ def publicar_objeto(request):
     )
 
 def lista_objetos(request):
-
     objetos = Objeto.objects.filter(
         disponible=True
-    )
+    ).select_related("categoria", "usuario").prefetch_related("imagenes")
 
-    busqueda = request.GET.get(
-        "q",
-        ""
-    ).strip()
-
-    categoria = request.GET.get(
-        "categoria",
-        ""
-    )
-
-    estado = request.GET.get(
-        "estado",
-        ""
-    )
-
-    accion = request.GET.get(
-        "accion",
-        ""
-    )
+    busqueda = request.GET.get("q", "").strip()
+    categoria = request.GET.get("categoria", "")
+    estado = request.GET.get("estado", "")
+    accion = request.GET.get("accion", "")
 
     if busqueda:
         objetos = objetos.filter(
@@ -206,7 +190,7 @@ def lista_objetos(request):
 
     if categoria:
         objetos = objetos.filter(
-            categoria=categoria
+            categoria_id=categoria
         )
 
     if estado:
@@ -219,6 +203,10 @@ def lista_objetos(request):
             accion=accion
         )
 
+    categorias = Categoria.objects.filter(
+        activa=True
+    ).order_by("nombre")
+
     return render(
         request,
         "objetos/lista.html",
@@ -228,7 +216,7 @@ def lista_objetos(request):
             "categoria": categoria,
             "estado": estado,
             "accion": accion,
-            "categorias": Objeto.CATEGORIAS,
+            "categorias": categorias,
             "estados": Objeto.ESTADOS,
             "acciones": Objeto.ACCIONES,
         }

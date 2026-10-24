@@ -73,14 +73,16 @@ Objetos disponibles | Segunda Vida
                     Todas
                 </option>
 
-                {% for valor, nombre in categorias %}
+                {% for categoria_item in categorias %}
 
-                    <option
-                        value="{{ valor }}"
-                        {% if categoria == valor %}selected{% endif %}
-                    >
-                        {{ nombre }}
-                    </option>
+                        <option value=
+                           "{{ categoria_item.id }}"
+                         {% if categoria == categoria_item.id|stringformat:"s"
+                            %}selected{% endif %}>
+                        
+                    
+                         {{ categoria_item.nombre }}
+                     </option>
 
                 {% endfor %}
 
@@ -235,7 +237,7 @@ Objetos disponibles | Segunda Vida
                     <div class="objeto-encabezado">
 
                         <span class="etiqueta-categoria">
-                            {{ objeto.get_categoria_display }}
+                            {{ objeto.categoria.nombre }}
                         </span>
 
                     </div>
