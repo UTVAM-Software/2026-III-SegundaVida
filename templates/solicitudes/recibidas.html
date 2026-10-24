@@ -1,0 +1,282 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Solicitudes recibidas | Segunda Vida
+{% endblock %}
+
+{% block content %}
+
+    <section class="solicitudes-pagina">
+
+        <header class="encabezado-solicitudes">
+            <div>
+                <span class="seccion-etiqueta">MI ACTIVIDAD</span>
+                <h1>Solicitudes recibidas</h1>
+                <p>
+                    Revisa las personas interesadas en darle una segunda vida
+                    a tus objetos.
+                </p>
+            </div>
+
+            <a
+                href="{% url 'lista_objetos' %}"
+                class="boton boton-outline"
+            >
+                <i data-lucide="search" class="lucide-icon" aria-hidden="true"></i>
+                Explorar objetos
+            </a>
+        </header>
+
+        {% if solicitudes %}
+
+            <div class="lista-solicitudes">
+
+                {% for solicitud in solicitudes %}
+
+                    <article class="tarjeta-solicitud">
+
+                        <div class="solicitud-encabezado">
+
+                            <div class="solicitud-icono">
+                                <i data-lucide="package" class="lucide-icon" aria-hidden="true"></i>
+                            </div>
+
+                            <div class="solicitud-titulo">
+                                <span class="solicitud-etiqueta">
+                                    SOLICITUD RECIBIDA
+                                </span>
+
+                                <h2>{{ solicitud.objeto.nombre }}</h2>
+
+                                <p>
+                                    Solicitado por
+                                    <strong>{{ solicitud.usuario.username }}</strong>
+                                </p>
+                            </div>
+
+                            <div class="estado-solicitud estado-{{ solicitud.estado }}">
+                                {{ solicitud.get_estado_display }}
+                            </div>
+
+                        </div>
+
+                        <div class="solicitud-contenido">
+
+                            <div class="informacion-solicitud">
+
+                                <div class="dato-solicitud">
+                                    <span class="dato-icono">
+                                        <i data-lucide="user" class="lucide-icon" aria-hidden="true"></i>
+                                    </span>
+
+                                    <div>
+                                        <span class="dato-label">Solicitante</span>
+                                        <strong>{{ solicitud.usuario.username }}</strong>
+                                    </div>
+                                </div>
+
+                                <div class="dato-solicitud">
+                                    <span class="dato-icono">
+                                        <i data-lucide="calendar-days" class="lucide-icon" aria-hidden="true"></i>
+                                    </span>
+
+                                    <div>
+                                        <span class="dato-label">Fecha de solicitud</span>
+                                        <strong>{{ solicitud.fecha_solicitud }}</strong>
+                                    </div>
+                                </div>
+
+                                {% if solicitud.mensaje %}
+                                    <div class="dato-solicitud dato-mensaje">
+                                        <span class="dato-icono">
+                                            <i data-lucide="message-circle" class="lucide-icon" aria-hidden="true"></i>
+                                        </span>
+
+                                        <div>
+                                            <span class="dato-label">Mensaje</span>
+                                            <p class="mensaje-solicitud">
+                                                {{ solicitud.mensaje }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                {% endif %}
+
+                            </div>
+
+                            {% if solicitud.estado == "aceptada" or solicitud.estado == "cumplida" or solicitud.estado == "no_cumplida" %}
+                                <div class="contacto-solicitud">
+
+                                    <div class="contacto-encabezado">
+                                        <span class="contacto-icono">
+                                            <i data-lucide="handshake" class="lucide-icon" aria-hidden="true"></i>
+                                        </span>
+
+                                        <div>
+                                            <h3>Contacto para el acuerdo</h3>
+                                            <p>
+                                                La solicitud fue aceptada.
+                                                Estos son los datos del solicitante.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div class="contacto-datos">
+                                        <div>
+                                            <span>Usuario</span>
+                                            <strong>{{ solicitud.usuario.username }}</strong>
+                                        </div>
+
+                                        {% if solicitud.usuario.perfil.telefono %}
+                                            <div>
+                                                <span>Teléfono</span>
+                                                <strong>{{ solicitud.usuario.perfil.telefono }}</strong>
+                                            </div>
+                                        {% endif %}
+
+                                        {% if solicitud.usuario.perfil.ubicacion %}
+                                            <div>
+                                                <span>Ubicación</span>
+                                                <strong>{{ solicitud.usuario.perfil.ubicacion }}</strong>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+
+                                </div>
+                            {% endif %}
+
+                            {% if solicitud.estado == "pendiente" %}
+                                <div class="decision-solicitud">
+                                    <div class="decision-icono">
+                                        <i data-lucide="message-square-more" class="lucide-icon" aria-hidden="true"></i>
+                                    </div>
+
+                                    <div class="decision-texto">
+                                        <h3>Esta persona está interesada</h3>
+                                        <p>
+                                            Revisa la solicitud y decide si deseas
+                                            aceptar el acuerdo.
+                                        </p>
+                                    </div>
+
+                                    <div class="acciones-solicitud">
+                                        <form
+                                            method="POST"
+                                            action="{% url 'aceptar_solicitud' solicitud.id %}"
+                                        >
+                                            {% csrf_token %}
+                                            <button
+                                                class="boton boton-exito"
+                                                type="submit"
+                                            >
+                                                <i data-lucide="check" class="lucide-icon" aria-hidden="true"></i>
+                                                Aceptar
+                                            </button>
+                                        </form>
+
+                                        <form
+                                            method="POST"
+                                            action="{% url 'rechazar_solicitud' solicitud.id %}"
+                                        >
+                                            {% csrf_token %}
+                                            <button
+                                                class="boton boton-rechazar"
+                                                type="submit"
+                                            >
+                                                <i data-lucide="x" class="lucide-icon" aria-hidden="true"></i>
+                                                Rechazar
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            {% if solicitud.estado == "cumplida" or solicitud.estado == "no_cumplida" %}
+                                <div class="valoracion-solicitud">
+
+                                    {% if not solicitud.valoraciones_del_usuario %}
+                                        <div class="valoracion-icono">
+                                            <i data-lucide="star" class="lucide-icon" aria-hidden="true"></i>
+                                        </div>
+
+                                        <div>
+                                            <h3>¿Cómo fue tu experiencia?</h3>
+                                            <p>
+                                                Tu valoración ayuda a construir
+                                                una comunidad de confianza.
+                                            </p>
+                                        </div>
+
+                                        <a
+                                            class="boton boton-valoracion"
+                                            href="{% url 'valorar_solicitud' solicitud.id %}"
+                                        >
+                                            <i data-lucide="star" class="lucide-icon" aria-hidden="true"></i>
+                                            Valorar a {{ solicitud.usuario.username }}
+                                        </a>
+                                    {% else %}
+                                        <div class="valoracion-completada">
+                                            <span>
+                                                <i data-lucide="star" class="lucide-icon" aria-hidden="true"></i>
+                                            </span>
+
+                                            <div>
+                                                <strong>Ya has valorado a esta persona.</strong>
+                                                <p>
+                                                    Gracias por ayudar a construir
+                                                    una comunidad de confianza.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+                        <footer class="solicitud-pie">
+                            <a
+                                class="boton boton-outline"
+                                href="{% url 'detalle_objeto' solicitud.objeto.id %}"
+                            >
+                                <i data-lucide="eye" class="lucide-icon" aria-hidden="true"></i>
+                                Ver objeto
+                            </a>
+                        </footer>
+
+                    </article>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <article class="solicitudes-vacio">
+                <div class="vacio-icono">
+                    <i data-lucide="inbox" class="lucide-icon" aria-hidden="true"></i>
+                </div>
+
+                <span class="seccion-etiqueta">TODO TRANQUILO POR AQUÍ</span>
+
+                <h2>No tienes solicitudes recibidas</h2>
+
+                <p>
+                    Cuando alguien se interese por uno de tus objetos,
+                    su solicitud aparecerá aquí.
+                </p>
+
+                <a
+                    class="boton boton-principal"
+                    href="{% url 'mis_objetos' %}"
+                >
+                    <i data-lucide="package" class="lucide-icon" aria-hidden="true"></i>
+                    Ver mis objetos
+                </a>
+            </article>
+
+        {% endif %}
+
+    </section>
+
+{% endblock %}

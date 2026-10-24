@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Perfil de {{ perfil.usuario.username }} | Segunda Vida
+{% endblock %}
+
+{% block content %}
+
+<section class="perfil-publico">
+
+    <div class="perfil-publico-hero">
+
+        <div class="perfil-publico-avatar">
+            <i
+                data-lucide="user-round"
+                class="lucide-icon"
+                aria-hidden="true"
+            ></i>
+        </div>
+
+        <div class="perfil-publico-identidad">
+
+            <span class="perfil-publico-etiqueta">
+                MIEMBRO DE SEGUNDA VIDA
+            </span>
+
+            <h1>
+                {{ perfil.nombre|default:perfil.usuario.username }}
+            </h1>
+
+            <p class="perfil-publico-usuario">
+                @{{ perfil.usuario.username }}
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="perfil-publico-metricas">
+
+        <div class="perfil-publico-metrica reputacion">
+            <div class="metrica-icono">
+                <i
+                    data-lucide="star"
+                    class="lucide-icon"
+                    aria-hidden="true"
+                ></i>
+            </div>
+
+            <div>
+                <strong>{{ perfil.reputacion }}</strong>
+                <span>Reputación</span>
+            </div>
+        </div>
+
+
+        <div class="perfil-publico-metrica karma">
+            <div class="metrica-icono">
+                <i
+                    data-lucide="leaf"
+                    class="lucide-icon"
+                    aria-hidden="true"
+                ></i>
+            </div>
+
+            <div>
+                <strong>{{ perfil.karma }}</strong>
+                <span>Karma</span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="perfil-publico-contenido">
+
+        <div class="perfil-publico-seccion">
+
+            <div class="perfil-publico-seccion-titulo">
+                <i
+                    data-lucide="user"
+                    class="lucide-icon"
+                    aria-hidden="true"
+                ></i>
+
+                <h2>Sobre esta persona</h2>
+            </div>
+
+
+            {% if perfil.biografia %}
+
+                <p class="perfil-publico-biografia">
+                    {{ perfil.biografia }}
+                </p>
+
+            {% else %}
+
+                <p class="perfil-publico-vacio">
+                    Esta persona todavía no ha agregado una biografía.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+
+        {% if perfil.ubicacion %}
+
+            <div class="perfil-publico-seccion">
+
+                <div class="perfil-publico-seccion-titulo">
+                    <i
+                        data-lucide="map-pin"
+                        class="lucide-icon"
+                        aria-hidden="true"
+                    ></i>
+
+                    <h2>Ubicación</h2>
+                </div>
+
+                <div class="perfil-publico-ubicacion">
+
+                    <i
+                        data-lucide="map-pin"
+                        class="lucide-icon"
+                        aria-hidden="true"
+                    ></i>
+
+                    <span>
+                        {{ perfil.ubicacion }}
+                    </span>
+
+                </div>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+    <div class="perfil-publico-footer">
+
+        <a
+            href="{% url 'lista_objetos' %}"
+            class="boton-secundario"
+        >
+            <i
+                data-lucide="arrow-left"
+                class="lucide-icon"
+                aria-hidden="true"
+            ></i>
+
+            Volver a buscar objetos
+        </a>
+
+    </div>
+
+</section>
+
+{% endblock %}
+

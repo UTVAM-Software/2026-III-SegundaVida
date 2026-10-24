@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block title %}
+Notificaciones | Segunda Vida
+{% endblock %}
+
+{% block content %}
+
+<section class="notificaciones-pagina">
+
+<header class="encabezado-notificaciones">
+
+    <div>
+        <span class="seccion-etiqueta">CENTRO DE ACTIVIDAD</span>
+
+        <h1>Notificaciones</h1>
+
+        <p>
+            Mantente al tanto de lo que sucede con tus solicitudes
+            y objetos.
+        </p>
+    </div>
+
+</header>
+
+
+{% if notificaciones %}
+
+    <div class="lista-notificaciones">
+
+        {% for notificacion in notificaciones %}
+
+            <article
+                class="notificacion {% if notificacion.leida %}notificacion-leida{% else %}notificacion-no-leida{% endif %}"
+            >
+
+                <div class="notificacion-icono">
+
+                    {% if notificacion.leida %}
+
+                        <i
+                            data-lucide="bell"
+                            class="lucide-icon"
+                            aria-hidden="true"
+                        ></i>
+
+                    {% else %}
+
+                        <i
+                            data-lucide="bell-ring"
+                            class="lucide-icon"
+                            aria-hidden="true"
+                        ></i>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="notificacion-contenido">
+
+                    <div class="notificacion-superior">
+
+                        {% if notificacion.leida %}
+
+                            <span class="estado-notificacion leida">
+                                Leída
+                            </span>
+
+                        {% else %}
+
+                            <span class="estado-notificacion nueva">
+                                Nueva
+                            </span>
+
+                        {% endif %}
+
+                        <time>
+                            {{ notificacion.fecha|date:"d/m/Y H:i" }}
+                        </time>
+
+                    </div>
+
+
+                    <p class="notificacion-mensaje">
+                        {{ notificacion.mensaje }}
+                    </p>
+
+                </div>
+
+
+                {% if notificacion.leida %}
+
+                    <div class="indicador-notificacion">
+                        <i
+                            data-lucide="check"
+                            class="lucide-icon"
+                            aria-hidden="true"
+                        ></i>
+                    </div>
+
+                {% else %}
+
+                    <div class="indicador-notificacion nueva">
+                        <span></span>
+                    </div>
+
+                {% endif %}
+
+            </article>
+
+        {% endfor %}
+
+    </div>
+
+
+{% else %}
+
+    <article class="notificaciones-vacias">
+
+        <div class="notificaciones-vacias-icono">
+
+            <i
+                data-lucide="bell-off"
+                class="lucide-icon"
+                aria-hidden="true"
+            ></i>
+
+        </div>
+
+        <span class="seccion-etiqueta">
+            TODO EN ORDEN
+        </span>
+
+        <h2>No tienes notificaciones</h2>
+
+        <p>
+            Cuando haya novedades sobre tus solicitudes u objetos,
+            aparecerán aquí.
+        </p>
+
+        <a
+            href="{% url 'inicio' %}"
+            class="boton boton-outline"
+        >
+            <i
+                data-lucide="arrow-left"
+                class="lucide-icon"
+                aria-hidden="true"
+            ></i>
+
+            Volver al inicio
+        </a>
+
+    </article>
+
+{% endif %}
+
+</section>
+
+{% endblock %}
