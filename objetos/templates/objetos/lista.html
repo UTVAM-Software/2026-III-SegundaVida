@@ -61,34 +61,25 @@ Objetos disponibles | Segunda Vida
         </div>
 
 
-        <div class="filtro">
+       <div class="filtro">
 
-            <label for="categoria">
-                Categoría
-            </label>
+    <label>Categoría</label>
 
-            <select id="categoria" name="categoria">
+    {% for valor, nombre, total in categorias %}
 
-                <option value="">
-                    Todas
-                </option>
+        <label>
+            <input
+                type="checkbox"
+                name="categoria"
+                value="{{ valor }}"
+                {% if valor in categorias_seleccionadas %}checked{% endif %}
+            >
+            {{ nombre }} ({{ total }})
+        </label>
 
-                {% for categoria_item in categorias %}
+    {% endfor %}
 
-                        <option value=
-                           "{{ categoria_item.id }}"
-                         {% if categoria == categoria_item.id|stringformat:"s"
-                            %}selected{% endif %}>
-                        
-                    
-                         {{ categoria_item.nombre }}
-                     </option>
-
-                {% endfor %}
-
-            </select>
-
-        </div>
+</div>
 
 
         <div class="filtro">
@@ -119,32 +110,25 @@ Objetos disponibles | Segunda Vida
         </div>
 
 
-        <div class="filtro">
+     <div class="filtro">
 
-            <label for="accion">
-                Acción
-            </label>
+    <label>Acción</label>
 
-            <select id="accion" name="accion">
+    {% for valor, nombre, total in acciones %}
 
-                <option value="">
-                    Todas
-                </option>
+        <label>
+            <input
+                type="checkbox"
+                name="accion"
+                value="{{ valor }}"
+                {% if valor in acciones_seleccionadas %}checked{% endif %}
+            >
+            {{ nombre }} ({{ total }})
+        </label>
 
-                {% for valor, nombre in acciones %}
+    {% endfor %}
 
-                    <option
-                        value="{{ valor }}"
-                        {% if accion == valor %}selected{% endif %}
-                    >
-                        {{ nombre }}
-                    </option>
-
-                {% endfor %}
-
-            </select>
-
-        </div>
+</div>
 
 
         <div class="acciones-filtros">
@@ -156,7 +140,7 @@ Objetos disponibles | Segunda Vida
                  Buscar
             </button>
 
-            {% if busqueda or categoria or estado or accion %}
+            {% if busqueda or categorias_seleccionadas or estados_seleccionados or acciones_seleccionadas %}
 
                 <a
                     class="boton boton-ligero"
@@ -184,9 +168,9 @@ Objetos disponibles | Segunda Vida
             Objetos disponibles
         </span>
 
-        <strong>
-            {{ objetos|length }}
-        </strong>
+    <strong>
+    {{ cantidad_objetos }}
+     </strong>
 
     </div>
 
@@ -317,7 +301,7 @@ Objetos disponibles | Segunda Vida
             Prueba cambiando los filtros o busca algo diferente.
         </p>
 
-        {% if busqueda or categoria or estado or accion %}
+        {% if busqueda or categorias_seleccionadas or estados_seleccionados or acciones_seleccionadas %}
 
             <a
                 class="boton boton-secundario"
@@ -326,14 +310,35 @@ Objetos disponibles | Segunda Vida
                 Limpiar filtros
             </a>
 
-        {% endif %}
+               {% endif %}
 
     </section>
 
 {% endif %}
 
+{% if objetos.has_other_pages %}
 
+    <nav class="paginacion" aria-label="Paginación">
 
+        {% if objetos.has_previous %}
+            <a href="?{{ query_string }}&page={{ objetos.previous_page_number }}">
+                Anterior
+            </a>
+        {% endif %}
+
+        <span>
+            Página {{ objetos.number }} de {{ objetos.paginator.num_pages }}
+        </span>
+
+        {% if objetos.has_next %}
+            <a href="?{{ query_string }}&page={{ objetos.next_page_number }}">
+                Siguiente
+            </a>
+        {% endif %}
+
+    </nav>
+
+{% endif %}
 
 <div class="volver">
     <a href="{% url 'inicio' %}">
