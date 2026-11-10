@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db import models, transaction
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.core.paginator import Paginator
 
 import json
 from urllib.parse import quote
@@ -171,31 +172,159 @@ def publicar_objeto(request):
         }
     )
 
+
 def lista_objetos(request):
+
+    objetos_disponibles = (
+        Objeto.objects.filter(disponible=True)
+        .select_related("usuario", "categoria")
+        .prefetch_related("imagenes")
+    )
+
+    busqueda = request.GET.get("q", "").strip()
+
+    categorias_disponibles = Categoria.objects.filter(
+        activa=True
+    ).order_by("nombre")
+
+    categorias_seleccionadas = request.GET.getlist("categoria")
+    estados_seleccionados = request.GET.getlist("estado")
+    acciones_seleccionadas = request.GET.getlist("accion")
+
+    # Validar los identificadores de categorías recibidos.
+    ids_validos = set(
+        str(pk)
+        for pk in categorias_disponibles.filter(
+            pk__in=categorias_seleccionadas
+        ).values_list("pk", flat=True)
+    )
+
+    categorias_seleccionadas = [
+        valor for valor in categorias_seleccionadas
+        if valor in ids_validos
+    ]
+
+    # Validar estados y acciones.
+    estados_validos = {
+        valor for valor, nombre in Objeto.ESTADOS
+    }
+
+    acciones_validas = {
+        valor for valor, nombre in Objeto.ACCIONES
+    }
+
+    estados_seleccionados = [
+        valor for valor in estados_seleccionados
+        if valor in estados_validos
+    ]
+
+    acciones_seleccionadas = [
+        valor for valor in acciones_seleccionadas
+        if valor in acciones_validas
+    ]
+
+    objetos = objetos_disponibles
+
+    if busqueda:
+        objetos = objetos.filter(
+            models.Q(nombre__icontains=busqueda)
+            | models.Q(descripcion__icontains=busqueda)
+            | models.Q(ubicacion__icontains=busqueda)
+        )
+
+    if categorias_seleccionadas:
+        objetos = objetos.filter(
+            categoria_id__in=categorias_seleccionadas
+        )
+
+    if estados_seleccionados:
+        objetos = objetos.filter(
+            estado__in=estados_seleccionados
+        )
+
+    if acciones_seleccionadas:
+        objetos = objetos.filter(
+            accion__in=acciones_seleccionadas
+        )
+
+    cantidad_objetos = objetos.count()
+
+    objetos = Paginator(
+        objetos.order_by("id"),
+        10
+    ).get_page(request.GET.get("page"))
+
+    parametros_paginacion = request.GET.copy()
+    parametros_paginacion.pop("page", None)
+
+    # Conteos generales de objetos disponibles.
+    conteos = {
+        campo: dict(
+            objetos_disponibles
+            .values(campo)
+            .annotate(total=models.Count("id"))
+            .values_list(campo, "total")
+        )
+        for campo in ("estado", "accion")
+    }
+
+    conteos_categorias = dict(
+        objetos_disponibles
+        .values("categoria_id")
+        .annotate(total=models.Count("id"))
+        .values_list("categoria_id", "total")
+    )
+
+    return render(
+        request,
+        "objetos/lista.html",
+        {
+            "objetos": objetos,
+            "cantidad_objetos": cantidad_objetos,
+            "query_string": parametros_paginacion.urlencode(),
+            "busqueda": busqueda,
+
+            "categorias_seleccionadas": categorias_seleccionadas,
+            "estados_seleccionados": estados_seleccionados,
+            "acciones_seleccionadas": acciones_seleccionadas,
+
+            "categorias": [
+                (
+                    str(categoria.id),
+                    categoria.nombre,
+                    conteos_categorias.get(categoria.id, 0)
+                )
+                for categoria in categorias_disponibles
+            ],
+
+            "estados": [
+                (
+                    valor,
+                    nombre,
+                    conteos["estado"].get(valor, 0)
+                )
+                for valor, nombre in Objeto.ESTADOS
+            ],
+
+            "acciones": [
+                (
+                    valor,
+                    nombre,
+                    conteos["accion"].get(valor, 0)
+                )
+                for valor, nombre in Objeto.ACCIONES
+            ],
+        }
+    )
 
     objetos = Objeto.objects.filter(
         disponible=True
-    )
+    ).select_related("categoria", "usuario").prefetch_related("imagenes")
 
-    busqueda = request.GET.get(
-        "q",
-        ""
-    ).strip()
-
-    categoria = request.GET.get(
-        "categoria",
-        ""
-    )
-
-    estado = request.GET.get(
-        "estado",
-        ""
-    )
-
-    accion = request.GET.get(
-        "accion",
-        ""
-    )
+    busqueda = request.GET.get("q", "").strip()
+    categoria = request.GET.get("categoria", "")
+    estado = request.GET.get("estado", "")
+    accion = request.GET.get("accion", "")
 
     if busqueda:
         objetos = objetos.filter(
@@ -206,7 +335,7 @@ def lista_objetos(request):
 
     if categoria:
         objetos = objetos.filter(
-            categoria=categoria
+            categoria_id=categoria
         )
 
     if estado:
@@ -219,6 +348,10 @@ def lista_objetos(request):
             accion=accion
         )
 
+    categorias = Categoria.objects.filter(
+        activa=True
+    ).order_by("nombre")
+
     return render(
         request,
         "objetos/lista.html",
@@ -228,7 +361,7 @@ def lista_objetos(request):
             "categoria": categoria,
             "estado": estado,
             "accion": accion,
-            "categorias": Objeto.CATEGORIAS,
+            "categorias": categorias,
             "estados": Objeto.ESTADOS,
             "acciones": Objeto.ACCIONES,
         }
