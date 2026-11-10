@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import models, transaction
+from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.core.paginator import Paginator
+
+from usuarios.permissions import roles_permitidos
 
 import json
 from urllib.parse import quote
@@ -80,7 +82,7 @@ def inicio(request):
         }
     )
 
-@login_required
+@roles_permitidos("Usuario")
 def publicar_objeto(request):
 
     if request.method == "POST":
@@ -172,7 +174,6 @@ def publicar_objeto(request):
         }
     )
 
-
 def lista_objetos(request):
 
     objetos_disponibles = (
@@ -191,11 +192,15 @@ def lista_objetos(request):
     estados_seleccionados = request.GET.getlist("estado")
     acciones_seleccionadas = request.GET.getlist("accion")
 
-    # Validar los identificadores de categorías recibidos.
+    ids_categorias_numericos = [
+        valor for valor in categorias_seleccionadas
+        if valor.isdecimal()
+    ]
+
     ids_validos = set(
         str(pk)
         for pk in categorias_disponibles.filter(
-            pk__in=categorias_seleccionadas
+            pk__in=ids_categorias_numericos
         ).values_list("pk", flat=True)
     )
 
@@ -204,7 +209,6 @@ def lista_objetos(request):
         if valor in ids_validos
     ]
 
-    # Validar estados y acciones.
     estados_validos = {
         valor for valor, nombre in Objeto.ESTADOS
     }
@@ -257,7 +261,6 @@ def lista_objetos(request):
     parametros_paginacion = request.GET.copy()
     parametros_paginacion.pop("page", None)
 
-    # Conteos generales de objetos disponibles.
     conteos = {
         campo: dict(
             objetos_disponibles
@@ -317,56 +320,6 @@ def lista_objetos(request):
         }
     )
 
-    objetos = Objeto.objects.filter(
-        disponible=True
-    ).select_related("categoria", "usuario").prefetch_related("imagenes")
-
-    busqueda = request.GET.get("q", "").strip()
-    categoria = request.GET.get("categoria", "")
-    estado = request.GET.get("estado", "")
-    accion = request.GET.get("accion", "")
-
-    if busqueda:
-        objetos = objetos.filter(
-            models.Q(nombre__icontains=busqueda)
-            | models.Q(descripcion__icontains=busqueda)
-            | models.Q(ubicacion__icontains=busqueda)
-        )
-
-    if categoria:
-        objetos = objetos.filter(
-            categoria_id=categoria
-        )
-
-    if estado:
-        objetos = objetos.filter(
-            estado=estado
-        )
-
-    if accion:
-        objetos = objetos.filter(
-            accion=accion
-        )
-
-    categorias = Categoria.objects.filter(
-        activa=True
-    ).order_by("nombre")
-
-    return render(
-        request,
-        "objetos/lista.html",
-        {
-            "objetos": objetos,
-            "busqueda": busqueda,
-            "categoria": categoria,
-            "estado": estado,
-            "accion": accion,
-            "categorias": categorias,
-            "estados": Objeto.ESTADOS,
-            "acciones": Objeto.ACCIONES,
-        }
-    )
-
 def detalle_objeto(request, id):
     objeto = get_object_or_404(Objeto, id=id)
 
@@ -383,7 +336,7 @@ def detalle_objeto(request, id):
         }
     )
 
-@login_required
+@roles_permitidos("Usuario")
 def editar_objeto(request, id):
 
     objeto = get_object_or_404(Objeto, id=id)
@@ -514,7 +467,7 @@ def editar_objeto(request, id):
         }
     )
 
-@login_required
+@roles_permitidos("Usuario")
 def eliminar_objeto(request, id):
 
     objeto = get_object_or_404(Objeto, id=id)

@@ -1,12 +1,14 @@
 from django.contrib import messages
 from django.contrib.auth import login
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.shortcuts import redirect, render, get_object_or_404
 
 from .forms import RegistroForm, PerfilForm
 from .models import Perfil, Notificacion
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+
+from .permissions import roles_permitidos
 
 
 @login_required
@@ -44,7 +46,7 @@ def perfil_publico(request, username):
         }
     )
 
-@login_required
+@roles_permitidos("Usuario")
 def editar_perfil(request):
 
     perfil_usuario = Perfil.objects.get(
@@ -107,6 +109,11 @@ def registro(request):
                 nombre=usuario.username
             )
 
+            grupo_usuario, _ = Group.objects.get_or_create(
+                name="Usuario"
+            )
+            usuario.groups.add(grupo_usuario)
+
             login(request, usuario)
 
             messages.success(
@@ -158,4 +165,3 @@ def notificaciones(request):
             ).count(),
         }
     )
-

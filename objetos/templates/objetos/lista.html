@@ -61,7 +61,7 @@ Objetos disponibles | Segunda Vida
         </div>
 
 
-             <div class="filtro">
+        <div class="filtro">
 
             <label>Categoría</label>
 
@@ -78,7 +78,6 @@ Objetos disponibles | Segunda Vida
                 </label>
 
             {% endfor %}
-
         </div>
 
 
@@ -99,7 +98,6 @@ Objetos disponibles | Segunda Vida
                 </label>
 
             {% endfor %}
-
         </div>
 
 
@@ -120,7 +118,9 @@ Objetos disponibles | Segunda Vida
                 </label>
 
             {% endfor %}
-    </div>
+        </div>
+
+
         <div class="acciones-filtros">
 
             <button
@@ -158,9 +158,9 @@ Objetos disponibles | Segunda Vida
             Objetos disponibles
         </span>
 
-    <strong>
-    {{ cantidad_objetos }}
-     </strong>
+        <strong>
+            {{ cantidad_objetos }}
+        </strong>
 
     </div>
 
@@ -300,18 +300,21 @@ Objetos disponibles | Segunda Vida
                 Limpiar filtros
             </a>
 
-               {% endif %}
+        {% endif %}
 
     </section>
 
 {% endif %}
 
-{% if objetos.has_other_pages %}
+{% if objetos.paginator.num_pages > 1 %}
 
-    <nav class="paginacion" aria-label="Paginación">
+    <nav class="paginacion" aria-label="Paginación de objetos">
 
         {% if objetos.has_previous %}
-            <a href="?{{ query_string }}&page={{ objetos.previous_page_number }}">
+            <a
+                class="boton boton-ligero"
+                href="?{{ query_string }}{% if query_string %}&amp;{% endif %}page={{ objetos.previous_page_number }}"
+            >
                 Anterior
             </a>
         {% endif %}
@@ -321,7 +324,10 @@ Objetos disponibles | Segunda Vida
         </span>
 
         {% if objetos.has_next %}
-            <a href="?{{ query_string }}&page={{ objetos.next_page_number }}">
+            <a
+                class="boton boton-ligero"
+                href="?{{ query_string }}{% if query_string %}&amp;{% endif %}page={{ objetos.next_page_number }}"
+            >
                 Siguiente
             </a>
         {% endif %}
@@ -329,6 +335,9 @@ Objetos disponibles | Segunda Vida
     </nav>
 
 {% endif %}
+
+
+
 
 <div class="volver">
     <a href="{% url 'inicio' %}">
