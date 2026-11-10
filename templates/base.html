@@ -5513,6 +5513,13 @@ main .leaflet-bar a:not(.boton) {
                         Lugares
                     </a>
 
+                    {% if user.is_superuser %}
+                        <a href="{% url 'administrar_usuarios' %}" class="nav-enlace">
+                            <i data-lucide="users" class="lucide-icon" aria-hidden="true"></i>
+                            Administrar usuarios
+                        </a>
+                    {% endif %}
+
                     <a href="{% url 'perfil' %}" class="nav-perfil">
                         <span class="avatar-mini">
                             <i data-lucide="user-round" class="lucide-icon" aria-hidden="true"></i>

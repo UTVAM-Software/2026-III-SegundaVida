@@ -30,6 +30,7 @@ from usuarios.views import (
     editar_perfil,
     perfil_publico,
     notificaciones,
+    administrar_usuarios,
 )
 
 urlpatterns = [
@@ -42,6 +43,7 @@ urlpatterns = [
     path("perfil/editar/", editar_perfil, name="editar_perfil"),
     path("perfil/<str:username>/", perfil_publico, name="perfil_publico"),
     path("notificaciones/", notificaciones, name="notificaciones"),
+    path("administrar-usuarios/", administrar_usuarios, name="administrar_usuarios"),
 
     # Inicio y objetos
     path("", inicio, name="inicio"),

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Administrar usuarios | Segunda Vida{% endblock %}
+
+{% block content %}
+
+<section class="perfil-pagina">
+
+    <div class="perfil-seccion-encabezado">
+        <p class="seccion-etiqueta">ADMINISTRACIÓN</p>
+        <h1>Administrar usuarios</h1>
+        <p>Consulta las cuentas registradas y administra sus permisos.</p>
+    </div>
+
+    <div class="perfil-seccion">
+
+        <div class="perfil-seccion-encabezado">
+            <h2>Usuarios registrados</h2>
+        </div>
+
+        {% for item in usuarios %}
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:15px; padding:16px 0; border-bottom:1px solid var(--borde); flex-wrap:wrap;">
+
+                <div>
+                    <strong>{{ item.usuario.username }}</strong>
+                    <p style="margin:5px 0; color:var(--texto-secundario);">
+                        Rol actual: {{ item.rol }}
+                    </p>
+                </div>
+
+                {% if not item.usuario.is_superuser %}
+
+                    <form method="POST" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                        {% csrf_token %}
+
+                        <input
+                            type="hidden"
+                            name="username"
+                            value="{{ item.usuario.username }}"
+                        >
+
+                        <select name="rol" required>
+                            {% for rol in roles %}
+                                <option
+                                    value="{{ rol }}"
+                                    {% if item.rol == rol %}selected{% endif %}
+                                >
+                                    {{ rol }}
+                                </option>
+                            {% endfor %}
+                        </select>
+
+                        <button type="submit" class="boton">
+                            Guardar
+                        </button>
+                    </form>
+
+                {% else %}
+
+                    <span>Administrador protegido</span>
+
+                {% endif %}
+
+            </div>
+        {% empty %}
+            <p>No hay usuarios registrados.</p>
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endblock %}

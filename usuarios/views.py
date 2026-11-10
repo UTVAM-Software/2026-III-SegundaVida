@@ -165,3 +165,74 @@ def notificaciones(request):
             ).count(),
         }
     )
+
+
+
+from django.http import HttpResponseForbidden
+
+
+def administrar_usuarios(request):
+
+    if not request.user.is_authenticated:
+        return redirect("login")
+
+    if not request.user.is_superuser:
+        return HttpResponseForbidden(
+            "No tienes permiso para acceder a esta sección."
+        )
+
+    roles = ["Usuario", "Solo lectura"]
+
+    if request.method == "POST":
+
+        username = request.POST.get("username")
+        nuevo_rol = request.POST.get("rol")
+
+        if nuevo_rol not in roles:
+            messages.error(request, "El rol seleccionado no es válido.")
+            return redirect("administrar_usuarios")
+
+        usuario = get_object_or_404(User, username=username)
+
+        if usuario.is_superuser or usuario == request.user:
+            messages.error(
+                request,
+                "No puedes modificar el rol de una cuenta administradora."
+            )
+            return redirect("administrar_usuarios")
+
+        grupo = Group.objects.get(name=nuevo_rol)
+        usuario.groups.set([grupo])
+
+        messages.success(
+            request,
+            f"El rol de {usuario.username} se actualizó correctamente."
+        )
+
+        return redirect("administrar_usuarios")
+
+    usuarios = []
+
+    for usuario in User.objects.all().order_by("username"):
+
+        if usuario.is_superuser:
+            rol = "Super usuario"
+        else:
+            grupos = list(
+                usuario.groups.values_list("name", flat=True)
+            )
+            rol = grupos[0] if grupos else "Sin rol"
+
+        usuarios.append({
+            "usuario": usuario,
+            "rol": rol,
+        })
+
+    return render(
+        request,
+        "usuarios/administrar_usuarios.html",
+        {
+            "usuarios": usuarios,
+            "roles": roles,
+        }
+    )
