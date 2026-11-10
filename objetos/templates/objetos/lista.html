@@ -63,85 +63,61 @@ Objetos disponibles | Segunda Vida
 
         <div class="filtro">
 
-            <label for="categoria">
-                Categoría
-            </label>
+            <label>Categoría</label>
 
-            <select id="categoria" name="categoria" multiple>
+            {% for valor, nombre, total in categorias %}
 
-                <option value="">
-                    Todas
-                </option>
-
-                {% for valor, nombre, total in categorias %}
-
-                    <option
+                <label>
+                    <input
+                        type="checkbox"
+                        name="categoria"
                         value="{{ valor }}"
-                        {% if valor in categorias_seleccionadas %}selected{% endif %}
+                        {% if valor in categorias_seleccionadas %}checked{% endif %}
                     >
-                        {{ nombre }} ({{ total }})
-                    </option>
+                    {{ nombre }} ({{ total }})
+                </label>
 
-                {% endfor %}
-
-            </select>
-
+            {% endfor %}
         </div>
 
 
         <div class="filtro">
 
-            <label for="estado">
-                Estado
-            </label>
+            <label>Estado</label>
 
-            <select id="estado" name="estado" multiple>
+            {% for valor, nombre, total in estados %}
 
-                <option value="">
-                    Todos
-                </option>
-
-                {% for valor, nombre, total in estados %}
-
-                    <option
+                <label>
+                    <input
+                        type="checkbox"
+                        name="estado"
                         value="{{ valor }}"
-                        {% if valor in estados_seleccionados %}selected{% endif %}
+                        {% if valor in estados_seleccionados %}checked{% endif %}
                     >
-                        {{ nombre }} ({{ total }})
-                    </option>
+                    {{ nombre }} ({{ total }})
+                </label>
 
-                {% endfor %}
-
-            </select>
-
+            {% endfor %}
         </div>
 
 
         <div class="filtro">
 
-            <label for="accion">
-                Acción
-            </label>
+            <label>Acción</label>
 
-            <select id="accion" name="accion" multiple>
+            {% for valor, nombre, total in acciones %}
 
-                <option value="">
-                    Todas
-                </option>
-
-                {% for valor, nombre, total in acciones %}
-
-                    <option
+                <label>
+                    <input
+                        type="checkbox"
+                        name="accion"
                         value="{{ valor }}"
-                        {% if valor in acciones_seleccionadas %}selected{% endif %}
+                        {% if valor in acciones_seleccionadas %}checked{% endif %}
                     >
-                        {{ nombre }} ({{ total }})
-                    </option>
+                    {{ nombre }} ({{ total }})
+                </label>
 
-                {% endfor %}
-
-            </select>
-
+            {% endfor %}
         </div>
 
 
