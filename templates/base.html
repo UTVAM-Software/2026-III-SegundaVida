@@ -1615,8 +1615,141 @@ main .volver a:hover {
 }
 
 .publicar-pagina {
-    max-width: 900px;
+    max-width: 1180px;
     margin: 0 auto;
+}
+
+.publicar-grid-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 310px;
+    align-items: start;
+    gap: 24px;
+}
+
+.form-publicar-card {
+    min-width: 0;
+    padding: 28px;
+    background: var(--blanco);
+    border: 1px solid var(--borde);
+    border-radius: var(--radio-grande);
+    box-shadow: var(--sombra-suave);
+}
+
+.publicar-pagina .formulario-publicar {
+    gap: 16px;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.publicar-pagina .bloque-publicar {
+    padding: 22px;
+    box-shadow: none;
+}
+
+.col-widgets-publicar {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.banner-inspiracional {
+    position: relative;
+    overflow: hidden;
+    padding: 22px;
+    background: linear-gradient(135deg, var(--verde-muy-suave), #e3ede6);
+    border: 1px solid var(--borde-verde);
+    border-radius: var(--radio-grande);
+}
+
+.banner-inspiracional h2 {
+    margin: 0 0 8px;
+    color: var(--verde-oscuro);
+    font-family: Georgia, serif;
+    font-size: 21px;
+}
+
+.banner-inspiracional p {
+    max-width: 230px;
+    margin: 0;
+    color: var(--texto-secundario);
+    font-size: 13px;
+}
+
+.banner-inspiracional > .lucide-icon {
+    position: absolute;
+    right: 18px;
+    bottom: 18px;
+    width: 36px;
+    height: 36px;
+    color: rgba(30, 85, 67, 0.18);
+}
+
+.widget-consejos {
+    padding: 22px;
+    background: var(--blanco);
+    border: 1px solid var(--borde);
+    border-radius: var(--radio-grande);
+    box-shadow: var(--sombra-suave);
+}
+
+.widget-consejos h2 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 18px;
+    color: var(--texto);
+    font-size: 15px;
+}
+
+.widget-consejos h2 .lucide-icon {
+    color: var(--verde-principal);
+}
+
+.item-consejo {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    margin-bottom: 15px;
+}
+
+.item-consejo:last-child {
+    margin-bottom: 0;
+}
+
+.icono-consejo {
+    display: flex;
+    width: 32px;
+    height: 32px;
+    flex: 0 0 32px;
+    align-items: center;
+    justify-content: center;
+    color: var(--verde-principal);
+    background: var(--verde-muy-suave);
+    border-radius: 50%;
+}
+
+.icono-consejo .lucide-icon {
+    width: 16px;
+    height: 16px;
+}
+
+.texto-consejo strong,
+.texto-consejo span {
+    display: block;
+}
+
+.texto-consejo strong {
+    color: var(--texto);
+    font-size: 12px;
+}
+
+.texto-consejo span {
+    color: var(--texto-secundario);
+    font-size: 11px;
+    line-height: 1.4;
 }
 
 .publicar-encabezado {
@@ -1866,6 +1999,28 @@ main .volver a:hover {
     text-align: right;
 }
 
+.previsualizacion-imagenes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.previsualizacion-imagen-item {
+    width: 88px;
+    height: 88px;
+    overflow: hidden;
+    background: var(--fondo-alternativo);
+    border: 1px solid var(--borde);
+    border-radius: var(--radio-pequeno);
+}
+
+.previsualizacion-imagen-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
 .publicar-final {
     display: flex;
     align-items: center;
@@ -1917,9 +2072,29 @@ main .volver a:hover {
     font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
+@media (max-width: 992px) {
+    .publicar-grid-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .col-widgets-publicar {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: start;
+    }
+}
+
 @media (max-width: 600px) {
     .publicar-encabezado h1 {
         font-size: 2rem;
+    }
+
+    .col-widgets-publicar {
+        grid-template-columns: 1fr;
+    }
+
+    .form-publicar-card {
+        padding: 20px 14px;
     }
 
     .bloque-publicar,
@@ -2326,8 +2501,346 @@ main .volver a:hover {
 }
 
 .detalle-objeto {
-    max-width: 1100px;
+    max-width: 1180px;
     margin: 0 auto;
+}
+
+.boton-regresar {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 18px;
+    color: var(--texto-secundario);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.boton-regresar:hover {
+    color: var(--verde-principal);
+}
+
+.detalle-grid-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    align-items: start;
+    gap: 24px;
+}
+
+.col-izquierda-detalle,
+.col-derecha-widgets {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.galeria-y-datos {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    align-items: center;
+    gap: 24px;
+    min-width: 0;
+    padding: 24px;
+    background: var(--blanco);
+    border: 1px solid var(--borde);
+    border-radius: var(--radio-grande);
+    box-shadow: var(--sombra-suave);
+}
+
+.galeria-y-datos .imagen-principal-link,
+.galeria-y-datos .detalle-imagen-vacia {
+    height: 330px;
+}
+
+.galeria-y-datos .miniaturas-detalle {
+    grid-template-columns: repeat(auto-fill, minmax(54px, 1fr));
+}
+
+.galeria-y-datos .miniaturas-detalle a {
+    height: 58px;
+}
+
+.galeria-y-datos .detalle-informacion h1 {
+    font-size: 30px;
+    overflow-wrap: anywhere;
+}
+
+.galeria-y-datos .detalle-etiquetas {
+    margin: 14px 0;
+}
+
+.tarjeta-destacada-accion {
+    margin-bottom: 14px;
+    padding: 13px 15px;
+    background: var(--fondo-alternativo);
+    border-radius: var(--radio);
+}
+
+.tarjeta-destacada-accion small,
+.tarjeta-destacada-accion strong {
+    display: block;
+}
+
+.tarjeta-destacada-accion small {
+    margin-bottom: 3px;
+    color: var(--texto-suave);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.tarjeta-destacada-accion strong {
+    color: var(--texto);
+    font-size: 14px;
+}
+
+.estado-publicacion {
+    align-self: flex-start;
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 650;
+}
+
+.estado-publicacion.disponible {
+    color: var(--exito);
+    background: var(--exito-suave);
+}
+
+.estado-publicacion.no-disponible {
+    color: var(--texto-secundario);
+    background: var(--fondo-alternativo);
+}
+
+.detalle-descripcion-seccion {
+    margin-top: 0;
+}
+
+.detalle-descripcion-seccion .detalle-descripcion {
+    margin: 0;
+    color: var(--texto-secundario);
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.widget-propietario,
+.widget-solicitud {
+    padding: 20px;
+    background: var(--blanco);
+    border: 1px solid var(--borde);
+    border-radius: var(--radio-grande);
+    box-shadow: var(--sombra-suave);
+}
+
+.widget-propietario h2,
+.widget-solicitud h2 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 14px;
+    color: var(--texto);
+    font-size: 16px;
+}
+
+.widget-propietario h2 {
+    color: var(--texto-suave);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.widget-solicitud > p {
+    margin: 0 0 14px;
+    color: var(--texto-secundario);
+    font-size: 13px;
+}
+
+.perfil-card-mini {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    margin-bottom: 16px;
+}
+
+.avatar-foto {
+    display: flex;
+    width: 46px;
+    height: 46px;
+    flex: 0 0 46px;
+    align-items: center;
+    justify-content: center;
+    color: var(--verde-principal);
+    background: var(--verde-suave);
+    border-radius: 50%;
+}
+
+.avatar-foto .lucide-icon {
+    width: 22px;
+    height: 22px;
+}
+
+.perfil-card-datos {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+}
+
+.perfil-card-datos strong {
+    overflow-wrap: anywhere;
+    color: var(--texto);
+    font-size: 14px;
+}
+
+.perfil-card-datos span {
+    color: var(--texto-suave);
+    font-size: 11px;
+}
+
+.boton-perfil-detalle {
+    width: 100%;
+    justify-content: center;
+}
+
+.widget-solicitud .boton-solicitar {
+    justify-content: space-between;
+}
+
+.widget-solicitud .nota-privacidad {
+    margin: 12px 0 0;
+    padding: 10px 12px;
+    color: var(--texto-secundario);
+    background: var(--verde-muy-suave);
+    border-radius: var(--radio-pequeno);
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.widget-solicitud .aviso-no-disponible,
+.widget-solicitud .aviso-solicitud {
+    margin: 0;
+    padding: 10px 12px;
+    color: var(--texto-secundario);
+    background: var(--fondo-alternativo);
+    border-radius: var(--radio-pequeno);
+    font-size: 12px;
+}
+
+.widget-solicitud .acciones-propietario .boton {
+    flex: 1;
+    justify-content: center;
+}
+
+.seccion-similares {
+    margin-top: 38px;
+}
+
+.header-similares {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.header-similares h2 {
+    margin: 0;
+    color: var(--verde-oscuro);
+    font-size: 21px;
+}
+
+.header-similares p {
+    margin: 3px 0 0;
+    color: var(--texto-secundario);
+    font-size: 13px;
+}
+
+.header-similares > a {
+    flex-shrink: 0;
+    color: var(--verde-principal);
+    font-size: 13px;
+    font-weight: 650;
+    text-decoration: none;
+}
+
+.grid-similares {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.tarjeta-similar {
+    min-width: 0;
+    overflow: hidden;
+    background: var(--blanco);
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    transition: transform var(--transicion), box-shadow var(--transicion);
+}
+
+.tarjeta-similar:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--sombra-media);
+}
+
+.imagen-similar {
+    display: flex;
+    height: 140px;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    color: var(--verde-principal);
+    background: var(--fondo-alternativo);
+}
+
+.imagen-similar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.imagen-similar .lucide-icon {
+    width: 30px;
+    height: 30px;
+}
+
+.contenido-similar {
+    padding: 12px;
+}
+
+.contenido-similar > span {
+    color: var(--texto-suave);
+    font-size: 10px;
+    text-transform: uppercase;
+}
+
+.contenido-similar h3 {
+    margin: 4px 0 0;
+    font-size: 14px;
+}
+
+.contenido-similar h3 a {
+    color: var(--texto);
+    text-decoration: none;
+}
+
+.contenido-similar h3 a:hover {
+    color: var(--verde-principal);
+}
+
+.contenido-similar p {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin: 7px 0 0;
+    color: var(--texto-secundario);
+    font-size: 11px;
+}
+
+.contenido-similar p .lucide-icon {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
 }
 
 .detalle-principal {
@@ -2679,13 +3192,30 @@ main .volver a:hover {
         gap: 30px;
     }
 
+    .detalle-grid-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .col-derecha-widgets {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .imagen-principal-link,
     .detalle-imagen-vacia {
         height: 380px;
     }
 
+    .galeria-y-datos {
+        grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    }
+
     .detalle-objeto .info-detalle {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .grid-similares {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
@@ -2694,6 +3224,21 @@ main .volver a:hover {
     .detalle-seccion,
     .impacto-ambiental {
         padding: 20px;
+    }
+
+    .galeria-y-datos {
+        grid-template-columns: 1fr;
+        gap: 18px;
+        padding: 18px;
+    }
+
+    .col-derecha-widgets {
+        grid-template-columns: 1fr;
+    }
+
+    .galeria-y-datos .imagen-principal-link,
+    .galeria-y-datos .detalle-imagen-vacia {
+        height: 280px;
     }
 
     .imagen-principal-link,
@@ -2711,6 +3256,18 @@ main .volver a:hover {
 
     .impacto-ambiental {
         flex-direction: column;
+    }
+
+    .grid-similares {
+        grid-template-columns: 1fr;
+    }
+
+    .header-similares {
+        align-items: flex-start;
+    }
+
+    .header-similares h2 {
+        font-size: 19px;
     }
 
     .detalle-publicador {
@@ -3664,6 +4221,39 @@ main .volver a:hover {
     margin-top: 25px;
 }
 
+.paginacion-objetos {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.paginacion-objetos a,
+.paginacion-objetos .deshabilitado {
+    padding: 8px 14px;
+    border: 1px solid var(--borde);
+    border-radius: var(--radio-pequeno);
+    color: var(--verde-principal);
+    background: var(--blanco);
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.paginacion-objetos a:hover {
+    background: var(--verde-muy-suave);
+}
+
+.paginacion-objetos .deshabilitado {
+    color: var(--texto-suave);
+    background: var(--fondo-alternativo);
+}
+
+.paginacion-objetos .pagina-actual {
+    color: var(--texto-secundario);
+    font-size: 14px;
+}
+
 .enlace-regresar {
     display: inline-flex;
     align-items: center;
@@ -4386,8 +4976,473 @@ main .volver a:hover {
         transition-duration: 0.01ms !important;
     }
 }
+
+/* =========================================
+   CORRECCIONES PARA lista.html
+   ========================================= */
+
+/* Espaciado de la tarjeta: el gap ya separa los bloques */
+.tarjeta-objeto .tarjeta-contenido .objeto-encabezado,
+.tarjeta-objeto .tarjeta-contenido .descripcion-objeto,
+.tarjeta-objeto .tarjeta-contenido .etiquetas-objeto,
+.tarjeta-objeto .tarjeta-contenido .ubicacion-objeto {
+    margin: 0;
+}
+
+.tarjeta-objeto .boton-ver {
+    margin-top: auto;
+}
+
+/* Etiquetas de acción visibles sobre fondo blanco */
+.etiquetas-objeto [class*="accion-"] {
+    border: 1px solid var(--borde-oscuro);
+}
+
+/* Icono de ubicación */
+.tarjeta-objeto .icono-ubicacion {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: var(--texto-suave);
+}
+
+/* Icono del estado vacío */
+.sin-resultados-icono {
+    color: var(--verde-principal);
+}
+
+.sin-resultados-icono .lucide-icon {
+    width: 42px;
+    height: 42px;
+}
+
+/* Iconos dentro de botones de filtros / encabezado */
+.acciones-filtros .boton .lucide-icon,
+.encabezado-lista .boton .lucide-icon {
+    width: 17px;
+    height: 17px;
+}
+
+/* Leaflet no debe pasar por encima del navbar sticky */
+#mapa-publicar,
+#mapa-objeto {
+    isolation: isolate;
+}
+
+/* =========================================
+   CORRECCIONES PARA publicar.html
+   ========================================= */
+
+/* El formulario solo agrupa los bloques (evita tarjeta dentro de tarjeta) */
+.formulario-publicar {
+    padding: 0;
+    background: none;
+    border: none;
+    box-shadow: none;
+}
+
+/* Errores de Django */
+.error-formulario ul,
+.errores-generales ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.errores-generales {
+    padding: 14px 18px;
+    background: var(--error-suave);
+    color: var(--error);
+    border: 1px solid var(--error-borde);
+    border-radius: var(--radio);
+    font-size: 0.9rem;
+}
+
+/* Campo ubicación + botón */
+.campo-ubicacion-fila {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+}
+
+.campo-ubicacion-fila input {
+    flex: 1;
+    min-width: 0;
+}
+
+.campo-ubicacion-fila .boton {
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.campo-ubicacion-fila .boton .lucide-icon {
+    width: 16px;
+    height: 16px;
+}
+
+/* Mensaje de estado del mapa */
+.estado-mapa {
+    margin: 0 0 4px;
+    color: var(--texto-secundario);
+    font-size: 0.8rem;
+}
+
+.estado-mapa.error {
+    color: var(--error);
+}
+
+/* Ícono del mensaje final */
+.publicar-mensaje > span .lucide-icon {
+    width: 22px;
+    height: 22px;
+}
+
+/* Leaflet vs. main a:not(.boton) (mayor especificidad) */
+main .leaflet-container a:not(.boton) {
+    color: #0078A8;
+    font-weight: normal;
+}
+
+main .leaflet-bar a:not(.boton) {
+    color: #000;
+    font-weight: bold;
+}
+
+@media (max-width: 600px) {
+    .campo-ubicacion-fila {
+        flex-direction: column;
+    }
+}
+
+/* =========================================
+   CORRECCIONES PARA inicio.html
+   ========================================= */
+
+/* Íconos Lucide en contenedores que usaban font-size (emojis) */
+.hero-icono .lucide-icon {
+    width: 30px;
+    height: 30px;
+}
+
+.impacto-icono {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
+    color: var(--verde-principal);
+}
+
+.impacto-icono .lucide-icon {
+    width: 38px;
+    height: 38px;
+}
+
+.impacto-vacio {
+    color: var(--verde-principal);
+}
+
+.impacto-vacio .lucide-icon {
+    width: 30px;
+    height: 30px;
+}
+
+/* Etiquetas en mayúsculas con respiro entre letras */
+.hero-etiqueta,
+.seccion-etiqueta,
+.encabezado-solicitudes .seccion-etiqueta {
+    letter-spacing: 0.08em;
+}
+
+/* =========================================
+   CORRECCIONES PARA perfil.html
+   ========================================= */
+
+/* Íconos Lucide en contenedores que usaban font-size (emojis) */
+.perfil-avatar .lucide-icon {
+    width: 40px;
+    height: 40px;
+}
+
+.metrica-icono .lucide-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.metrica-karma .metrica-icono {
+    color: var(--verde-principal);
+}
+
+.estrella .lucide-icon {
+    width: 22px;
+    height: 22px;
+}
+
+.hojas-karma {
+    color: var(--verde-medio);
+}
+
+.hojas-karma .lucide-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.biografia-icono {
+    color: var(--verde-principal);
+}
+
+.biografia-icono .lucide-icon {
+    width: 22px;
+    height: 22px;
+}
+
+/* Etiquetas en mayúsculas con respiro entre letras */
+.perfil-etiqueta,
+.metrica-etiqueta {
+    letter-spacing: 0.08em;
+}
+
+/* Texto de biografía respeta saltos de línea sin desbordar */
+.biografia-contenido p {
+    overflow-wrap: anywhere;
+}
+
+/* =========================================
+   CORRECCIONES PARA solicitudes.html
+   ========================================= */
+
+/* Íconos Lucide en contenedores que usaban font-size (emojis) */
+.seguimiento-icono {
+    width: 46px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    background: var(--verde-suave);
+    color: var(--verde-principal);
+    border-radius: 50%;
+}
+
+.seguimiento-icono .lucide-icon {
+    width: 22px;
+    height: 22px;
+}
+
+.contacto-icono {
+    color: var(--verde-principal);
+}
+
+.valoracion-solicitud .valoracion-icono {
+    color: var(--dorado-contraste);
+}
+
+.valoracion-solicitud .valoracion-icono .lucide-icon {
+    width: 26px;
+    height: 26px;
+}
+
+.valoracion-completada > span {
+    color: var(--dorado-contraste);
+}
+
+.valoracion-completada > span .lucide-icon {
+    width: 26px;
+    height: 26px;
+    fill: currentColor;
+}
+
+.valoracion-completada strong {
+    color: var(--dorado-texto);
+}
+
+.vacio-icono .lucide-icon {
+    width: 32px;
+    height: 32px;
+}
+
+/* Etiquetas en mayúsculas con respiro entre letras */
+.solicitud-etiqueta,
+.resumen-etiqueta {
+    letter-spacing: 0.08em;
+}
+
+/* Iconos dentro de botones de acciones */
+.acciones-solicitud .boton .lucide-icon,
+.encabezado-solicitudes .boton .lucide-icon,
+.solicitudes-vacio .boton .lucide-icon {
+    width: 17px;
+    height: 17px;
+}
+
+/* =========================================
+   CORRECCIONES PARA detalle.html
+   ========================================= */
+
+/* Íconos Lucide en contenedores que usaban font-size (emojis) */
+.detalle-imagen-vacia .lucide-icon {
+    width: 56px;
+    height: 56px;
+}
+
+.detalle-seccion-titulo > span {
+    color: var(--verde-principal);
+}
+
+.impacto-ambiental-icono {
+    color: var(--verde-principal);
+}
+
+.impacto-ambiental-icono .lucide-icon {
+    width: 28px;
+    height: 28px;
+}
+
+.avatar-publicador {
+    color: var(--verde-principal);
+}
+
+.avatar-publicador .lucide-icon {
+    width: 22px;
+    height: 22px;
+}
+
+.detalle-ubicacion-mini .lucide-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    color: var(--verde-medio);
+}
+
+.acciones-propietario .boton .lucide-icon {
+    width: 17px;
+    height: 17px;
+}
+
+/* Aviso cuando el objeto ya no está disponible */
+.aviso-no-disponible {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin: 0;
+    padding: 12px 14px;
+    background: var(--advertencia-suave);
+    color: var(--dorado-texto);
+    border-radius: var(--radio);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.aviso-no-disponible .lucide-icon {
+    flex-shrink: 0;
+}
+
+/* =========================================
+   CORRECCIONES PARA solicitudes_recibidas.html
+   ========================================= */
+
+.decision-icono .lucide-icon {
+    width: 22px;
+    height: 22px;
+}
+
+/* =========================================
+   CORRECCIONES PARA lugares.html
+   ========================================= */
+
+/* Tarjeta de lugar: cada bloque ya trae su propio margen/borde,
+   así que se quita el gap para no duplicar espacio */
+.tarjeta-lugar .lugar-contenido {
+    gap: 0;
+}
+
+/* El botón se pega al fondo y deja respiro sobre él */
+.tarjeta-lugar .lugar-contenido > :nth-last-child(2) {
+    margin-bottom: 18px;
+}
+
+.tarjeta-lugar .lugar-contenido .boton-lugar {
+    margin-top: auto;
+}
+
+/* Teléfono como enlace sin romper el estilo del dato */
+.dato-lugar p a {
+    font-weight: 500;
+}
+
+/* =========================================
+   CORRECCIONES PARA detalle_lugar.html
+   ========================================= */
+
+.detalle-lugar-pagina {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* La tarjeta no lleva padding propio: la imagen va de borde a borde */
+.detalle-lugar {
+    padding: 0;
+    overflow: hidden;
+}
+
+.detalle-lugar .lugar-imagen {
+    height: 320px;
+}
+
+.detalle-lugar .lugar-imagen-placeholder {
+    height: 100%;
+}
+
+.detalle-lugar-contenido {
+    padding: 30px;
+    overflow-wrap: anywhere;
+}
+
+.detalle-lugar-contenido h1 {
+    margin: 0 0 12px;
+    color: var(--texto);
+    font-size: 2rem;
+    line-height: 1.15;
+}
+
+.detalle-lugar-contenido h2 {
+    margin: 28px 0 12px;
+    font-size: 1.15rem;
+}
+
+.detalle-lugar-contenido .lugar-descripcion {
+    margin: 0;
+}
+
+.detalle-lugar-vacio {
+    margin: 0;
+    color: var(--texto-suave);
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+.detalle-lugar-datos .dato-lugar:last-child {
+    border-bottom: 1px solid var(--borde);
+}
+
+.enlace-como-llegar {
+    margin-left: 6px;
+    font-size: 0.8rem;
+}
+
+@media (max-width: 600px) {
+    .detalle-lugar .lugar-imagen {
+        height: 220px;
+    }
+
+    .detalle-lugar-contenido {
+        padding: 22px 18px;
+    }
+
+    .detalle-lugar-contenido h1 {
+        font-size: 1.6rem;
+    }
+}
     </style>
 
+    {% block extra_head %}{% endblock %}
 </head>
 
 <body>
