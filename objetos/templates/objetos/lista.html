@@ -67,19 +67,19 @@ Objetos disponibles | Segunda Vida
                 Categoría
             </label>
 
-            <select id="categoria" name="categoria">
+            <select id="categoria" name="categoria" multiple>
 
                 <option value="">
                     Todas
                 </option>
 
-                {% for valor, nombre in categorias %}
+                {% for valor, nombre, total in categorias %}
 
                     <option
                         value="{{ valor }}"
-                        {% if categoria == valor %}selected{% endif %}
+                        {% if valor in categorias_seleccionadas %}selected{% endif %}
                     >
-                        {{ nombre }}
+                        {{ nombre }} ({{ total }})
                     </option>
 
                 {% endfor %}
@@ -95,19 +95,19 @@ Objetos disponibles | Segunda Vida
                 Estado
             </label>
 
-            <select id="estado" name="estado">
+            <select id="estado" name="estado" multiple>
 
                 <option value="">
                     Todos
                 </option>
 
-                {% for valor, nombre in estados %}
+                {% for valor, nombre, total in estados %}
 
                     <option
                         value="{{ valor }}"
-                        {% if estado == valor %}selected{% endif %}
+                        {% if valor in estados_seleccionados %}selected{% endif %}
                     >
-                        {{ nombre }}
+                        {{ nombre }} ({{ total }})
                     </option>
 
                 {% endfor %}
@@ -123,19 +123,19 @@ Objetos disponibles | Segunda Vida
                 Acción
             </label>
 
-            <select id="accion" name="accion">
+            <select id="accion" name="accion" multiple>
 
                 <option value="">
                     Todas
                 </option>
 
-                {% for valor, nombre in acciones %}
+                {% for valor, nombre, total in acciones %}
 
                     <option
                         value="{{ valor }}"
-                        {% if accion == valor %}selected{% endif %}
+                        {% if valor in acciones_seleccionadas %}selected{% endif %}
                     >
-                        {{ nombre }}
+                        {{ nombre }} ({{ total }})
                     </option>
 
                 {% endfor %}
@@ -154,7 +154,7 @@ Objetos disponibles | Segunda Vida
                  Buscar
             </button>
 
-            {% if busqueda or categoria or estado or accion %}
+            {% if busqueda or categorias_seleccionadas or estados_seleccionados or acciones_seleccionadas %}
 
                 <a
                     class="boton boton-ligero"
@@ -183,7 +183,7 @@ Objetos disponibles | Segunda Vida
         </span>
 
         <strong>
-            {{ objetos|length }}
+            {{ cantidad_objetos }}
         </strong>
 
     </div>
@@ -235,7 +235,7 @@ Objetos disponibles | Segunda Vida
                     <div class="objeto-encabezado">
 
                         <span class="etiqueta-categoria">
-                            {{ objeto.get_categoria_display }}
+                            {{ objeto.categoria.nombre }}
                         </span>
 
                     </div>
@@ -315,7 +315,7 @@ Objetos disponibles | Segunda Vida
             Prueba cambiando los filtros o busca algo diferente.
         </p>
 
-        {% if busqueda or categoria or estado or accion %}
+        {% if busqueda or categorias_seleccionadas or estados_seleccionados or acciones_seleccionadas %}
 
             <a
                 class="boton boton-secundario"
@@ -327,6 +327,36 @@ Objetos disponibles | Segunda Vida
         {% endif %}
 
     </section>
+
+{% endif %}
+
+{% if objetos.paginator.num_pages > 1 %}
+
+    <nav class="paginacion" aria-label="Paginación de objetos">
+
+        {% if objetos.has_previous %}
+            <a
+                class="boton boton-ligero"
+                href="?{{ query_string }}{% if query_string %}&amp;{% endif %}page={{ objetos.previous_page_number }}"
+            >
+                Anterior
+            </a>
+        {% endif %}
+
+        <span>
+            Página {{ objetos.number }} de {{ objetos.paginator.num_pages }}
+        </span>
+
+        {% if objetos.has_next %}
+            <a
+                class="boton boton-ligero"
+                href="?{{ query_string }}{% if query_string %}&amp;{% endif %}page={{ objetos.next_page_number }}"
+            >
+                Siguiente
+            </a>
+        {% endif %}
+
+    </nav>
 
 {% endif %}
 

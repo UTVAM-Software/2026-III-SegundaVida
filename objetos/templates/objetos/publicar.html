@@ -239,6 +239,12 @@
                         0 de 5 imágenes seleccionadas
                     </div>
 
+                    <div
+                        id="previsualizacion-imagenes"
+                        class="previsualizacion-imagenes"
+                        aria-label="Vista previa de imágenes">
+                    </div>
+
                     {% if imagen_form.imagen.errors %}
                         <div class="error-formulario">
                             {{ imagen_form.imagen.errors }}
@@ -284,13 +290,45 @@
 
     </section>
 
+    <style>
+        .previsualizacion-imagenes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 14px;
+        }
+
+        .previsualizacion-imagen-item {
+            width: 110px;
+            height: 110px;
+            overflow: hidden;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+            background-color: #f5f5f5;
+        }
+
+        .previsualizacion-imagen-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+    </style>
+
     <script>
         const inputImagenes = document.getElementById("id_imagen");
         const contadorImagenes = document.getElementById("contador-imagenes");
+        const previsualizacion = document.getElementById("previsualizacion-imagenes");
 
-        if (inputImagenes) {
+        let urlsPrevisualizacion = [];
+
+        if (inputImagenes && contadorImagenes && previsualizacion) {
             inputImagenes.addEventListener("change", function () {
                 const cantidad = this.files.length;
+
+                urlsPrevisualizacion.forEach((url) => URL.revokeObjectURL(url));
+                urlsPrevisualizacion = [];
+                previsualizacion.replaceChildren();
 
                 if (cantidad > 5) {
                     alert("Solo puedes seleccionar un máximo de 5 imágenes.");
@@ -302,8 +340,27 @@
 
                 contadorImagenes.textContent =
                     `${cantidad} de 5 imágenes seleccionadas`;
+
+                Array.from(this.files).forEach((archivo) => {
+                    const url = URL.createObjectURL(archivo);
+                    urlsPrevisualizacion.push(url);
+
+                    const elemento = document.createElement("div");
+                    elemento.className = "previsualizacion-imagen-item";
+
+                    const imagen = document.createElement("img");
+                    imagen.src = url;
+                    imagen.alt = "Vista previa de imagen";
+
+                    elemento.appendChild(imagen);
+                    previsualizacion.appendChild(elemento);
+                });
             });
         }
+
+        window.addEventListener("beforeunload", function () {
+            urlsPrevisualizacion.forEach((url) => URL.revokeObjectURL(url));
+        });
     </script>
 
     <link

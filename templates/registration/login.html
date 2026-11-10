@@ -8,7 +8,7 @@
 
     <section class="tarjeta">
 
-        <h1> Segunda Vida</h1>
+        <h1>Segunda Vida</h1>
 
         <h2>Iniciar sesión</h2>
 
@@ -16,7 +16,25 @@
 
             {% csrf_token %}
 
-            {{ form.as_p }}
+            {% if form.non_field_errors %}
+                <div class="auth-form-errors">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            {% for field in form %}
+                <p>
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {{ field.errors }}
+                </p>
+            {% endfor %}
+
+            <input
+                type="hidden"
+                name="next"
+                value="{{ next|default:'' }}"
+            >
 
             <button
                 class="boton"
@@ -28,6 +46,13 @@
         </form>
 
         <br>
+
+        <p>
+            ¿No tienes una cuenta?
+            <a href="{% url 'registro' %}">
+                Regístrate
+            </a>
+        </p>
 
         <a href="{% url 'inicio' %}">
             ← Volver al inicio

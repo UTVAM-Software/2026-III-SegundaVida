@@ -28,6 +28,11 @@ class SolicitudForm(forms.ModelForm):
         }
 
 class ValoracionForm(forms.ModelForm):
+    puntuacion = forms.IntegerField(
+        min_value=1,
+        max_value=5,
+        label="Puntuación",
+    )
 
     class Meta:
         model = Valoracion

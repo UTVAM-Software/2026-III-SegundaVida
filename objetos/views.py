@@ -1,14 +1,17 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import models, transaction
+from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+
+from usuarios.permissions import roles_permitidos
 
 import json
 from urllib.parse import quote
 from urllib.request import Request, urlopen
 
 from .forms import ObjetoForm, ImagenObjetoForm
-from .models import Objeto, ImagenObjeto, LugarSegundaVida
+from .models import Objeto, Categoria, ImagenObjeto, LugarSegundaVida
 from .utils import (
     calcular_material_reutilizado_estimado,
     calcular_material_reutilizado_comunidad,
@@ -79,7 +82,7 @@ def inicio(request):
         }
     )
 
-@login_required
+@roles_permitidos("Usuario")
 def publicar_objeto(request):
 
     if request.method == "POST":
@@ -173,29 +176,58 @@ def publicar_objeto(request):
 
 def lista_objetos(request):
 
-    objetos = Objeto.objects.filter(
-        disponible=True
+    objetos_disponibles = (
+        Objeto.objects.filter(disponible=True)
+        .select_related("usuario", "categoria")
+        .prefetch_related("imagenes")
     )
 
-    busqueda = request.GET.get(
-        "q",
-        ""
-    ).strip()
+    busqueda = request.GET.get("q", "").strip()
 
-    categoria = request.GET.get(
-        "categoria",
-        ""
+    categorias_disponibles = Categoria.objects.filter(
+        activa=True
+    ).order_by("nombre")
+
+    categorias_seleccionadas = request.GET.getlist("categoria")
+    estados_seleccionados = request.GET.getlist("estado")
+    acciones_seleccionadas = request.GET.getlist("accion")
+
+    ids_categorias_numericos = [
+        valor for valor in categorias_seleccionadas
+        if valor.isdecimal()
+    ]
+
+    ids_validos = set(
+        str(pk)
+        for pk in categorias_disponibles.filter(
+            pk__in=ids_categorias_numericos
+        ).values_list("pk", flat=True)
     )
 
-    estado = request.GET.get(
-        "estado",
-        ""
-    )
+    categorias_seleccionadas = [
+        valor for valor in categorias_seleccionadas
+        if valor in ids_validos
+    ]
 
-    accion = request.GET.get(
-        "accion",
-        ""
-    )
+    estados_validos = {
+        valor for valor, nombre in Objeto.ESTADOS
+    }
+
+    acciones_validas = {
+        valor for valor, nombre in Objeto.ACCIONES
+    }
+
+    estados_seleccionados = [
+        valor for valor in estados_seleccionados
+        if valor in estados_validos
+    ]
+
+    acciones_seleccionadas = [
+        valor for valor in acciones_seleccionadas
+        if valor in acciones_validas
+    ]
+
+    objetos = objetos_disponibles
 
     if busqueda:
         objetos = objetos.filter(
@@ -204,33 +236,87 @@ def lista_objetos(request):
             | models.Q(ubicacion__icontains=busqueda)
         )
 
-    if categoria:
+    if categorias_seleccionadas:
         objetos = objetos.filter(
-            categoria=categoria
+            categoria_id__in=categorias_seleccionadas
         )
 
-    if estado:
+    if estados_seleccionados:
         objetos = objetos.filter(
-            estado=estado
+            estado__in=estados_seleccionados
         )
 
-    if accion:
+    if acciones_seleccionadas:
         objetos = objetos.filter(
-            accion=accion
+            accion__in=acciones_seleccionadas
         )
+
+    cantidad_objetos = objetos.count()
+
+    objetos = Paginator(
+        objetos.order_by("id"),
+        10
+    ).get_page(request.GET.get("page"))
+
+    parametros_paginacion = request.GET.copy()
+    parametros_paginacion.pop("page", None)
+
+    conteos = {
+        campo: dict(
+            objetos_disponibles
+            .values(campo)
+            .annotate(total=models.Count("id"))
+            .values_list(campo, "total")
+        )
+        for campo in ("estado", "accion")
+    }
+
+    conteos_categorias = dict(
+        objetos_disponibles
+        .values("categoria_id")
+        .annotate(total=models.Count("id"))
+        .values_list("categoria_id", "total")
+    )
 
     return render(
         request,
         "objetos/lista.html",
         {
             "objetos": objetos,
+            "cantidad_objetos": cantidad_objetos,
+            "query_string": parametros_paginacion.urlencode(),
             "busqueda": busqueda,
-            "categoria": categoria,
-            "estado": estado,
-            "accion": accion,
-            "categorias": Objeto.CATEGORIAS,
-            "estados": Objeto.ESTADOS,
-            "acciones": Objeto.ACCIONES,
+
+            "categorias_seleccionadas": categorias_seleccionadas,
+            "estados_seleccionados": estados_seleccionados,
+            "acciones_seleccionadas": acciones_seleccionadas,
+
+            "categorias": [
+                (
+                    str(categoria.id),
+                    categoria.nombre,
+                    conteos_categorias.get(categoria.id, 0)
+                )
+                for categoria in categorias_disponibles
+            ],
+
+            "estados": [
+                (
+                    valor,
+                    nombre,
+                    conteos["estado"].get(valor, 0)
+                )
+                for valor, nombre in Objeto.ESTADOS
+            ],
+
+            "acciones": [
+                (
+                    valor,
+                    nombre,
+                    conteos["accion"].get(valor, 0)
+                )
+                for valor, nombre in Objeto.ACCIONES
+            ],
         }
     )
 
@@ -250,7 +336,7 @@ def detalle_objeto(request, id):
         }
     )
 
-@login_required
+@roles_permitidos("Usuario")
 def editar_objeto(request, id):
 
     objeto = get_object_or_404(Objeto, id=id)
@@ -381,7 +467,7 @@ def editar_objeto(request, id):
         }
     )
 
-@login_required
+@roles_permitidos("Usuario")
 def eliminar_objeto(request, id):
 
     objeto = get_object_or_404(Objeto, id=id)
