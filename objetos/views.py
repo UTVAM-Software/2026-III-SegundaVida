@@ -8,7 +8,7 @@ from urllib.parse import quote
 from urllib.request import Request, urlopen
 
 from .forms import ObjetoForm, ImagenObjetoForm
-from .models import Objeto, ImagenObjeto, LugarSegundaVida
+from .models import Objeto, Categoria, ImagenObjeto, LugarSegundaVida
 from .utils import (
     calcular_material_reutilizado_estimado,
     calcular_material_reutilizado_comunidad,
