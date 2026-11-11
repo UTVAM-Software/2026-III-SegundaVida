@@ -104,11 +104,6 @@ def registro(request):
 
             usuario.save()
 
-            Perfil.objects.create(
-                usuario=usuario,
-                nombre=usuario.username
-            )
-
             grupo_usuario, _ = Group.objects.get_or_create(
                 name="Usuario"
             )
