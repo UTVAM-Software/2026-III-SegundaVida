@@ -1,12 +1,14 @@
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.models import User, Group
+from django.contrib.sessions.models import Session
+from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
+from django.utils import timezone
 
 from .forms import RegistroForm, PerfilForm
 from .models import Perfil, Notificacion
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
 
 from .permissions import roles_permitidos
 
@@ -104,11 +106,6 @@ def registro(request):
 
             usuario.save()
 
-            Perfil.objects.create(
-                usuario=usuario,
-                nombre=usuario.username
-            )
-
             grupo_usuario, _ = Group.objects.get_or_create(
                 name="Usuario"
             )
@@ -166,11 +163,6 @@ def notificaciones(request):
         }
     )
 
-
-
-from django.http import HttpResponseForbidden
-
-
 def administrar_usuarios(request):
 
     if not request.user.is_authenticated:
@@ -186,28 +178,64 @@ def administrar_usuarios(request):
     if request.method == "POST":
 
         username = request.POST.get("username")
-        nuevo_rol = request.POST.get("rol")
-
-        if nuevo_rol not in roles:
-            messages.error(request, "El rol seleccionado no es válido.")
-            return redirect("administrar_usuarios")
-
+        accion = request.POST.get("accion")
         usuario = get_object_or_404(User, username=username)
 
-        if usuario.is_superuser or usuario == request.user:
+        if usuario.is_superuser or usuario.pk == request.user.pk:
             messages.error(
                 request,
-                "No puedes modificar el rol de una cuenta administradora."
+                "No puedes modificar ni desactivar esta cuenta."
             )
             return redirect("administrar_usuarios")
 
-        grupo = Group.objects.get(name=nuevo_rol)
-        usuario.groups.set([grupo])
+        if accion == "cambiar_rol":
+            nuevo_rol = request.POST.get("rol")
+            if nuevo_rol not in roles:
+                messages.error(
+                    request,
+                    "El rol seleccionado no es válido."
+                )
+                return redirect("administrar_usuarios")
 
-        messages.success(
-            request,
-            f"El rol de {usuario.username} se actualizó correctamente."
-        )
+            grupo, _ = Group.objects.get_or_create(name=nuevo_rol)
+            usuario.groups.set([grupo])
+            messages.success(
+                request,
+                f"El rol de {usuario.username} se actualizó correctamente."
+            )
+
+        elif accion == "desactivar":
+            usuario.is_active = False
+            usuario.save(update_fields=["is_active"])
+
+            claves_sesion = []
+            sesiones_activas = Session.objects.filter(
+                expire_date__gt=timezone.now()
+            )
+            for sesion in sesiones_activas.iterator():
+                if sesion.get_decoded().get("_auth_user_id") == str(usuario.pk):
+                    claves_sesion.append(sesion.session_key)
+
+            if claves_sesion:
+                Session.objects.filter(
+                    session_key__in=claves_sesion
+                ).delete()
+
+            messages.success(
+                request,
+                f"La cuenta de {usuario.username} fue desactivada."
+            )
+
+        elif accion == "reactivar":
+            usuario.is_active = True
+            usuario.save(update_fields=["is_active"])
+            messages.success(
+                request,
+                f"La cuenta de {usuario.username} fue reactivada."
+            )
+
+        else:
+            messages.error(request, "La acción seleccionada no es válida.")
 
         return redirect("administrar_usuarios")
 

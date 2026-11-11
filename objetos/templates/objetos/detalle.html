@@ -1,403 +1,395 @@
 {% extends "base.html" %}
+{% load l10n %}
 
 {% block title %}
 {{ objeto.nombre }} | Segunda Vida
+{% endblock %}
+
+{% block extra_head %}
+    {% if objeto.latitud != None and objeto.longitud != None %}
+        <link
+            rel="stylesheet"
+            href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+            integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+            crossorigin=""
+        >
+    {% endif %}
 {% endblock %}
 
 {% block content %}
 
 <section class="detalle-objeto">
 
+    <a href="{% url 'lista_objetos' %}" class="boton-regresar">
+        <i data-lucide="arrow-left" class="lucide-icon" aria-hidden="true"></i>
+        Volver a explorar
+    </a>
 
+    <div class="detalle-grid-layout">
 
-<div class="detalle-principal">
+        <div class="col-izquierda-detalle">
 
-    
+            <div class="galeria-y-datos">
 
-    <div class="detalle-galeria">
+                <div class="detalle-galeria">
 
-        {% with imagen_principal=objeto.imagenes.first %}
+                    {% with imagenes=objeto.imagenes.all imagen_principal=objeto.imagenes.first %}
 
-            {% if imagen_principal %}
+                        {% if imagen_principal %}
+                            <a
+                                href="{{ imagen_principal.imagen.url }}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="imagen-principal-link"
+                            >
+                                <img
+                                    src="{{ imagen_principal.imagen.url }}"
+                                    alt="Imagen de {{ objeto.nombre }}"
+                                    class="imagen-principal"
+                                >
+                            </a>
+                        {% else %}
+                            <div class="detalle-imagen-vacia">
+                                <span><i data-lucide="image-off" class="lucide-icon" aria-hidden="true"></i></span>
+                                <p>Este objeto todavía no tiene imágenes.</p>
+                            </div>
+                        {% endif %}
 
-                <a
-                    href="{{ imagen_principal.imagen.url }}"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="imagen-principal-link"
-                >
+                        {% if imagenes|length > 1 %}
+                            <div class="miniaturas-detalle">
+                                {% for imagen in imagenes %}
+                                    <a
+                                        href="{{ imagen.imagen.url }}"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        <img
+                                            src="{{ imagen.imagen.url }}"
+                                            alt="Imagen {{ forloop.counter }} de {{ objeto.nombre }}"
+                                        >
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
 
-                    <img
-                        src="{{ imagen_principal.imagen.url }}"
-                        alt="Imagen de {{ objeto.nombre }}"
-                        class="imagen-principal"
-                    >
-
-                </a>
-
-            {% else %}
-
-                <div class="detalle-imagen-vacia">
-
-                    <span><i data-lucide="image-off" class="lucide-icon" aria-hidden="true"></i></span>
-
-                    <p>
-                        Este objeto todavía no tiene imágenes.
-                    </p>
+                    {% endwith %}
 
                 </div>
 
-            {% endif %}
+                <div class="detalle-informacion">
 
-        {% endwith %}
+                    <span class="detalle-categoria">
+                        {{ objeto.get_categoria_display }}
+                    </span>
 
+                    <h1>{{ objeto.nombre }}</h1>
 
-        {% if objeto.imagenes.count > 1 %}
+                    <div class="detalle-etiquetas">
+                        <span class="etiqueta estado-{{ objeto.estado }}">
+                            {{ objeto.get_estado_display }}
+                        </span>
+                        <span class="etiqueta accion-{{ objeto.accion }}">
+                            {{ objeto.get_accion_display }}
+                        </span>
+                    </div>
 
-            <div class="miniaturas-detalle">
+                    <div class="tarjeta-destacada-accion">
+                        <small>Tipo de acción</small>
+                        <strong>{{ objeto.get_accion_display }}</strong>
+                    </div>
 
-                {% for imagen in objeto.imagenes.all %}
+                    <div class="detalle-ubicacion-mini">
+                        <i data-lucide="map-pin" class="lucide-icon" aria-hidden="true"></i>
+                        <span>{{ objeto.ubicacion|default:"Ubicación no especificada" }}</span>
+                    </div>
 
-                    <a
-                        href="{{ imagen.imagen.url }}"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
+                    {% if objeto.disponible %}
+                        <span class="estado-publicacion disponible">Disponible</span>
+                    {% else %}
+                        <span class="estado-publicacion no-disponible">No disponible</span>
+                    {% endif %}
 
-                        <img
-                            src="{{ imagen.imagen.url }}"
-                            alt="Imagen adicional de {{ objeto.nombre }}"
-                        >
-
-                    </a>
-
-                {% endfor %}
+                </div>
 
             </div>
 
-        {% endif %}
-
-    </div>
-
-
-    
-
-    <div class="detalle-informacion">
-
-        <span class="detalle-categoria">
-            {{ objeto.get_categoria_display }}
-        </span>
-
-        <h1>
-            {{ objeto.nombre }}
-        </h1>
-
-        <p class="detalle-descripcion">
-            {{ objeto.descripcion }}
-        </p>
-
-
-        <div class="detalle-etiquetas">
-
-            <span class="etiqueta estado-{{ objeto.estado }}">
-                 {{ objeto.get_estado_display }}
-            </span>
-
-            <span class="etiqueta accion-{{ objeto.accion }}">
-                 {{ objeto.get_accion_display }}
-            </span>
+            <section class="detalle-seccion detalle-descripcion-seccion">
+                <div class="detalle-seccion-titulo">
+                    <span><i data-lucide="file-text" class="lucide-icon" aria-hidden="true"></i></span>
+                    <div>
+                        <h2>Descripción</h2>
+                        <p>Más detalles sobre este objeto.</p>
+                    </div>
+                </div>
+                <p class="detalle-descripcion">{{ objeto.descripcion|linebreaksbr }}</p>
+            </section>
 
         </div>
 
+        <aside class="col-derecha-widgets">
 
-        <div class="detalle-ubicacion-mini">
+            <section class="widget-propietario">
+                <h2>Publicado por</h2>
+                <div class="perfil-card-mini">
+                    <div class="avatar-foto" aria-hidden="true">
+                        <i data-lucide="user-round" class="lucide-icon"></i>
+                    </div>
+                    <div class="perfil-card-datos">
+                        <strong>{{ objeto.usuario.first_name|default:objeto.usuario.username }}</strong>
+                        <span>Miembro desde {{ objeto.usuario.date_joined|date:"M Y" }}</span>
+                    </div>
+                </div>
+                <a
+                    href="{% url 'perfil_publico' objeto.usuario.username %}"
+                    class="boton boton-secundario boton-perfil-detalle"
+                >
+                    Ver perfil
+                </a>
+            </section>
+
+            <section class="widget-solicitud">
+                <h2><i data-lucide="message-square" class="lucide-icon" aria-hidden="true"></i> Realizar solicitud</h2>
+                <p>Contacta a quien publicó el objeto para contarle por qué te interesa.</p>
+
+                {% if user == objeto.usuario %}
+                    <p class="aviso-solicitud">Esta publicación es tuya.</p>
+                    <div class="acciones-propietario">
+                        <a class="boton boton-secundario" href="{% url 'editar_objeto' objeto.id %}">
+                            <i data-lucide="pencil" class="lucide-icon" aria-hidden="true"></i>
+                            Editar
+                        </a>
+                        <a class="boton boton-peligro" href="{% url 'eliminar_objeto' objeto.id %}">
+                            <i data-lucide="trash-2" class="lucide-icon" aria-hidden="true"></i>
+                            Eliminar
+                        </a>
+                    </div>
+                {% elif not objeto.disponible %}
+                    <p class="aviso-no-disponible">
+                        <i data-lucide="info" class="lucide-icon" aria-hidden="true"></i>
+                        Este objeto ya no está disponible para solicitud.
+                    </p>
+                {% elif user.is_authenticated %}
+                    <a class="boton boton-solicitar" href="{% url 'solicitar_objeto' objeto.id %}">
+                        Enviar solicitud <span aria-hidden="true">→</span>
+                    </a>
+                    <p class="nota-privacidad">
+                        El propietario revisará tu solicitud desde su sección de Solicitudes.
+                    </p>
+                {% else %}
+                    <a
+                        class="boton boton-solicitar"
+                        href="{% url 'login' %}?next={{ request.path|urlencode }}"
+                    >
+                        Inicia sesión para solicitarlo <span aria-hidden="true">→</span>
+                    </a>
+                {% endif %}
+            </section>
+
+        </aside>
+
+    </div>
+
+    <!-- INFORMACIÓN DEL OBJETO -->
+    <section class="detalle-seccion">
+
+        <div class="detalle-seccion-titulo">
+
+            <span><i data-lucide="info" class="lucide-icon" aria-hidden="true"></i></span>
+
+            <div>
+                <h2>Información del objeto</h2>
+                <p>Conoce un poco más sobre esta publicación.</p>
+            </div>
+
+        </div>
+
+        <div class="info-detalle">
+
+            <div class="dato-detalle">
+                <span class="dato-icono"><i data-lucide="tag" class="lucide-icon" aria-hidden="true"></i></span>
+                <div>
+                    <strong>Categoría</strong>
+                    <span>{{ objeto.get_categoria_display }}</span>
+                </div>
+            </div>
+
+            <div class="dato-detalle">
+                <span class="dato-icono"><i data-lucide="activity" class="lucide-icon" aria-hidden="true"></i></span>
+                <div>
+                    <strong>Estado</strong>
+                    <span>{{ objeto.get_estado_display }}</span>
+                </div>
+            </div>
+
+            <div class="dato-detalle">
+                <span class="dato-icono"><i data-lucide="repeat-2" class="lucide-icon" aria-hidden="true"></i></span>
+                <div>
+                    <strong>Acción</strong>
+                    <span>{{ objeto.get_accion_display }}</span>
+                </div>
+            </div>
+
+            <div class="dato-detalle">
+                <span class="dato-icono">
+                    {% if objeto.funciona %}
+                        <i data-lucide="circle-check" class="lucide-icon" aria-hidden="true"></i>
+                    {% else %}
+                        <i data-lucide="circle-x" class="lucide-icon" aria-hidden="true"></i>
+                    {% endif %}
+                </span>
+                <div>
+                    <strong>¿Funciona?</strong>
+                    <span>{% if objeto.funciona %}Sí{% else %}No{% endif %}</span>
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- IMPACTO AMBIENTAL -->
+    <section class="impacto-ambiental">
+
+        <div class="impacto-ambiental-icono">
+            <i data-lucide="leaf" class="lucide-icon" aria-hidden="true"></i>
+        </div>
+
+        <div>
+
+            <p class="seccion-etiqueta">IMPACTO AMBIENTAL ESTIMADO</p>
+
+            <h2>Una segunda vida también cuenta.</h2>
+
+            <p>
+                Si este objeto encuentra una segunda vida,
+                representa aproximadamente
+                <strong>{{ material_reutilizado_estimado|floatformat:1 }} kg</strong>
+                de material que permanece en uso.
+            </p>
+
+            <small>
+                Esta cifra es una estimación de referencia del proyecto
+                y no representa una medición directa de residuos evitados.
+            </small>
+
+        </div>
+
+    </section>
+
+    <!-- UBICACIÓN -->
+    <section class="detalle-seccion ubicacion-seccion">
+
+        <div class="detalle-seccion-titulo">
 
             <span><i data-lucide="map-pin" class="lucide-icon" aria-hidden="true"></i></span>
 
-            <span>
-                {{ objeto.ubicacion }}
-            </span>
+            <div>
+                <h2>Ubicación</h2>
+                <p>Lugar indicado por la persona que publicó el objeto.</p>
+            </div>
 
         </div>
 
+        <p class="ubicacion-texto">{{ objeto.ubicacion }}</p>
 
-        {% if user.is_authenticated and objeto.usuario != user and objeto.disponible %}
+        {% if objeto.latitud != None and objeto.longitud != None %}
 
-            <a
-                class="boton boton-principal boton-solicitar"
-                href="{% url 'solicitar_objeto' objeto.id %}"
-            >
-                Quiero este objeto
-                <span>→</span>
-            </a>
+            {# unlocalize: evita "19,85" (coma) que rompería el mapa en locale es #}
+            <div
+                id="mapa-objeto"
+                data-lat="{{ objeto.latitud|unlocalize }}"
+                data-lng="{{ objeto.longitud|unlocalize }}"
+                data-ubicacion="{{ objeto.ubicacion }}"
+            ></div>
 
         {% endif %}
 
+    </section>
 
-        {% if user == objeto.usuario %}
-
-            <div class="acciones-propietario">
-
-                <a
-                    class="boton boton-secundario"
-                    href="{% url 'editar_objeto' objeto.id %}"
-                >
-                     Editar objeto
-                </a>
-
-                <a
-                    class="boton boton-peligro"
-                    href="{% url 'eliminar_objeto' objeto.id %}"
-                >
-                     Eliminar
-                </a>
-
+    {% if objetos_similares %}
+        <section class="seccion-similares">
+            <div class="header-similares">
+                <div>
+                    <h2>Objetos similares</h2>
+                    <p>Más objetos disponibles de esta categoría.</p>
+                </div>
+                <a href="{% url 'lista_objetos' %}">Ver todos <span aria-hidden="true">→</span></a>
             </div>
 
-        {% endif %}
-
-    </div>
-
-</div>
-
-
-
-
-<section class="detalle-seccion">
-
-    <div class="detalle-seccion-titulo">
-
-        <span><i data-lucide="info" class="lucide-icon" aria-hidden="true"></i></span>
-
-        <div>
-
-            <h2>
-                Información del objeto
-            </h2>
-
-            <p>
-                Conoce un poco más sobre esta publicación.
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <div class="info-detalle">
-
-        <div class="dato-detalle">
-
-            <span class="dato-icono"><i data-lucide="tag" class="lucide-icon" aria-hidden="true"></i></span>
-
-            <div>
-                <strong>Categoría</strong>
-                <span>{{ objeto.get_categoria_display }}</span>
+            <div class="grid-similares">
+                {% for similar in objetos_similares %}
+                    <article class="tarjeta-similar">
+                        <a
+                            href="{% url 'detalle_objeto' similar.id %}"
+                            class="imagen-similar"
+                            aria-label="Ver {{ similar.nombre }}"
+                        >
+                            {% with imagen=similar.imagenes.all|first %}
+                                {% if imagen %}
+                                    <img src="{{ imagen.imagen.url }}" alt="Imagen de {{ similar.nombre }}">
+                                {% else %}
+                                    <span><i data-lucide="image-off" class="lucide-icon" aria-hidden="true"></i></span>
+                                {% endif %}
+                            {% endwith %}
+                        </a>
+                        <div class="contenido-similar">
+                            <span>{{ similar.get_categoria_display }}</span>
+                            <h3>
+                                <a href="{% url 'detalle_objeto' similar.id %}">{{ similar.nombre }}</a>
+                            </h3>
+                            {% if similar.ubicacion %}
+                                <p><i data-lucide="map-pin" class="lucide-icon" aria-hidden="true"></i>{{ similar.ubicacion|truncatechars:36 }}</p>
+                            {% endif %}
+                        </div>
+                    </article>
+                {% endfor %}
             </div>
-
-        </div>
-
-
-        <div class="dato-detalle">
-
-            <span class="dato-icono"><i data-lucide="activity" class="lucide-icon" aria-hidden="true"></i></span>
-
-            <div>
-                <strong>Estado</strong>
-                <span>{{ objeto.get_estado_display }}</span>
-            </div>
-
-        </div>
-
-
-        <div class="dato-detalle">
-
-            <span class="dato-icono"><i data-lucide="repeat-2" class="lucide-icon" aria-hidden="true"></i></span>
-
-            <div>
-                <strong>Acción</strong>
-                <span>{{ objeto.get_accion_display }}</span>
-            </div>
-
-        </div>
-
-
-        <div class="dato-detalle">
-
-            <span class="dato-icono"><i data-lucide="circle-check" class="lucide-icon" aria-hidden="true"></i></span>
-
-            <div>
-
-                <strong>¿Funciona?</strong>
-
-                <span>
-
-                    {% if objeto.funciona %}
-                        Sí
-                    {% else %}
-                        No
-                    {% endif %}
-
-                </span>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-
-
-<section class="impacto-ambiental">
-
-    <div class="impacto-ambiental-icono">
-        <i data-lucide="leaf" class="lucide-icon" aria-hidden="true"></i>
-    </div>
-
-    <div>
-
-        <p class="seccion-etiqueta">
-            IMPACTO AMBIENTAL ESTIMADO
-        </p>
-
-        <h2>
-            Una segunda vida también cuenta.
-        </h2>
-
-        <p>
-
-            Si este objeto encuentra una segunda vida,
-            representa aproximadamente
-
-            <strong>
-                {{ material_reutilizado_estimado }} kg
-            </strong>
-
-            de material que permanece en uso.
-
-        </p>
-
-        <small>
-            Esta cifra es una estimación de referencia del proyecto
-            y no representa una medición directa de residuos evitados.
-        </small>
-
-    </div>
-
-</section>
-
-
-
-
-<section class="detalle-seccion ubicacion-seccion">
-
-    <div class="detalle-seccion-titulo">
-
-        <span><i data-lucide="map-pin" class="lucide-icon" aria-hidden="true"></i></span>
-
-        <div>
-
-            <h2>
-                Ubicación
-            </h2>
-
-            <p>
-                Lugar indicado por la persona que publicó el objeto.
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <p class="ubicacion-texto">
-        {{ objeto.ubicacion }}
-    </p>
-
-
-    {% if objeto.latitud != None and objeto.longitud != None %}
-
-        <div id="mapa-objeto"></div>
-
-        <link
-            rel="stylesheet"
-            href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        >
-
-        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-        <script>
-
-            const latitud = Number("{{ objeto.latitud }}");
-            const longitud = Number("{{ objeto.longitud }}");
-
-            const mapa = L.map("mapa-objeto").setView(
-                [latitud, longitud],
-                14
-            );
-
-            L.tileLayer(
-                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                {
-                    attribution: '&copy; OpenStreetMap contributors'
-                }
-            ).addTo(mapa);
-
-            L.marker([latitud, longitud])
-                .addTo(mapa)
-                .bindPopup(
-                    "Ubicación: {{ objeto.ubicacion|escapejs }}"
-                )
-                .openPopup();
-
-        </script>
-
+        </section>
     {% endif %}
 
 </section>
 
+{% if objeto.latitud != None and objeto.longitud != None %}
 
+    <script
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin="">
+    </script>
 
+    <script>
+        (function () {
+            const contenedor = document.getElementById("mapa-objeto");
 
-<section class="publicado-por detalle-publicador">
+            if (!contenedor || !window.L) {
+                return;
+            }
 
-    <div class="avatar-publicador">
-        <i data-lucide="user-round" class="lucide-icon" aria-hidden="true"></i>
-    </div>
+            const latitud = parseFloat(contenedor.dataset.lat);
+            const longitud = parseFloat(contenedor.dataset.lng);
 
-    <div>
+            if (!Number.isFinite(latitud) || !Number.isFinite(longitud)) {
+                contenedor.hidden = true;
+                return;
+            }
 
-        <span>
-            Publicado por
-        </span>
+            const mapa = L.map(contenedor).setView([latitud, longitud], 14);
 
-        <a href="{% url 'perfil_publico' objeto.usuario.username %}">
-            {{ objeto.usuario.username }}
-        </a>
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                attribution: "&copy; OpenStreetMap contributors"
+            }).addTo(mapa);
 
-    </div>
+            // textContent (no HTML): evita inyección desde el campo ubicación
+            const popup = document.createElement("div");
+            popup.textContent = "Ubicación: " + (contenedor.dataset.ubicacion || "");
 
-    <a
-        class="ver-perfil"
-        href="{% url 'perfil_publico' objeto.usuario.username %}"
-    >
-        Ver perfil →
-    </a>
+            L.marker([latitud, longitud])
+                .addTo(mapa)
+                .bindPopup(popup)
+                .openPopup();
+        })();
+    </script>
 
-</section>
-
-
-
-
-<div class="volver">
-    <a href="{% url 'lista_objetos' %}">
-        ← Volver a objetos
-    </a>
-</div>
-
-</section>
+{% endif %}
 
 {% endblock %}

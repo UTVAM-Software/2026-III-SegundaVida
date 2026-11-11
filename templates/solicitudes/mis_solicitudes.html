@@ -4,9 +4,198 @@
     Mis solicitudes | Segunda Vida
 {% endblock %}
 
+{% block extra_head %}
+<style>
+    .solicitudes-pagina { max-width: 1180px; margin: 0 auto; }
+    .solicitudes-pagina .encabezado-solicitudes {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        margin-bottom: 24px;
+        padding: 26px 30px;
+        overflow: hidden;
+        background: linear-gradient(135deg, var(--verde-muy-suave), #e5ede7);
+        border: 1px solid var(--borde-verde);
+        border-radius: var(--radio-grande);
+    }
+    .solicitudes-pagina .encabezado-solicitudes h1 {
+        margin: 0 0 6px;
+        color: var(--verde-oscuro);
+        font-size: 28px;
+    }
+    .solicitudes-pagina .encabezado-solicitudes p { font-size: 14px; }
+    .solicitudes-pagina .encabezado-solicitudes > div::after {
+        display: block;
+        max-width: 230px;
+        margin-top: 12px;
+        color: var(--verde-principal);
+        content: "“Dar una segunda vida también conecta personas.”";
+        font-family: Georgia, serif;
+        font-size: 14px;
+        font-style: italic;
+    }
+    .solicitudes-pagina .encabezado-solicitudes .boton {
+        flex-shrink: 0;
+        border-radius: 999px;
+    }
+    .solicitudes-pagina .lista-solicitudes { gap: 14px; }
+    .solicitudes-pagina .tarjeta-solicitud {
+        border-radius: var(--radio-grande);
+        transition: border-color var(--transicion), box-shadow var(--transicion);
+    }
+    .solicitudes-pagina .tarjeta-solicitud:hover {
+        transform: none;
+        border-color: var(--borde-verde);
+        box-shadow: var(--sombra-media);
+    }
+    .solicitudes-pagina .solicitud-encabezado {
+        grid-template-columns: 48px minmax(0, 1fr) auto;
+        gap: 13px;
+        padding: 18px 20px;
+        border-bottom: 0;
+    }
+    .solicitudes-pagina .solicitud-icono {
+        width: 46px;
+        height: 46px;
+        border-radius: 14px;
+    }
+    .solicitudes-pagina .solicitud-titulo h2 {
+        color: var(--verde-oscuro);
+        font-size: 17px;
+    }
+    .solicitudes-pagina .solicitud-titulo p { font-size: 12px; }
+    .solicitudes-pagina .estado-solicitud {
+        padding: 5px 10px;
+        font-size: 11px;
+    }
+    .solicitudes-pagina .solicitud-contenido { padding: 0 20px 16px; }
+    .solicitudes-pagina .informacion-solicitud {
+        grid-template-columns: minmax(150px, 0.4fr) minmax(0, 1fr);
+        gap: 14px;
+        margin-bottom: 14px;
+    }
+    .solicitudes-pagina .dato-solicitud > .dato-icono {
+        width: 32px;
+        height: 32px;
+        flex: 0 0 32px;
+        font-size: 14px;
+    }
+    .solicitudes-pagina .dato-label { font-size: 11px; }
+    .solicitudes-pagina .dato-solicitud strong,
+    .solicitudes-pagina .mensaje-solicitud { font-size: 13px; }
+    .solicitudes-pagina .mensaje-solicitud { line-height: 1.55; }
+    .solicitudes-pagina .contacto-solicitud,
+    .solicitudes-pagina .seguimiento-solicitud {
+        margin-top: 12px;
+        padding: 14px;
+        border: 0;
+        border-radius: var(--radio);
+    }
+    .solicitudes-pagina .contacto-solicitud { background: var(--verde-muy-suave); }
+    .solicitudes-pagina .contacto-encabezado { margin-bottom: 12px; }
+    .solicitudes-pagina .contacto-icono,
+    .solicitudes-pagina .seguimiento-icono,
+    .solicitudes-pagina .valoracion-icono {
+        display: grid;
+        width: 36px;
+        height: 36px;
+        place-items: center;
+        color: var(--verde-principal);
+        background: var(--blanco);
+        border-radius: 50%;
+        font-size: 16px;
+    }
+    .solicitudes-pagina .contacto-encabezado h3,
+    .solicitudes-pagina .seguimiento-texto h3,
+    .solicitudes-pagina .valoracion-solicitud h3 { font-size: 14px; }
+    .solicitudes-pagina .contacto-encabezado p,
+    .solicitudes-pagina .seguimiento-texto p,
+    .solicitudes-pagina .valoracion-solicitud p { font-size: 12px; }
+    .solicitudes-pagina .contacto-datos { gap: 10px 20px; }
+    .solicitudes-pagina .contacto-datos span { font-size: 10px; }
+    .solicitudes-pagina .contacto-datos strong { font-size: 12px; }
+    .solicitudes-pagina .seguimiento-solicitud {
+        grid-template-columns: 36px minmax(0, 1fr);
+        gap: 10px;
+        background: var(--fondo);
+    }
+    .solicitudes-pagina .seguimiento-solicitud .acciones-solicitud {
+        grid-column: 2;
+        justify-content: flex-start;
+    }
+    .solicitudes-pagina .seguimiento-solicitud .acciones-solicitud .boton,
+    .solicitudes-pagina .valoracion-solicitud .boton {
+        min-height: 36px;
+        padding: 8px 13px;
+        border-radius: 999px;
+        font-size: 12px;
+    }
+    .solicitudes-pagina .valoracion-solicitud {
+        gap: 12px;
+        margin-top: 12px;
+        padding: 14px;
+        border: 1px solid var(--dorado-borde);
+        border-radius: var(--radio);
+    }
+    .solicitudes-pagina .valoracion-solicitud > div:nth-child(2) { min-width: 180px; }
+    .solicitudes-pagina .valoracion-completada { min-width: 0; }
+    .solicitudes-pagina .solicitud-pie {
+        padding: 12px 20px;
+        background: var(--fondo-alternativo);
+        border-top: 1px solid var(--borde);
+    }
+    .solicitudes-pagina .solicitud-pie .boton {
+        min-height: 34px;
+        padding: 7px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+    }
+    .solicitudes-pagina .solicitudes-vacio {
+        padding: 44px 24px;
+        border-radius: var(--radio-grande);
+    }
+    .solicitudes-pagina .solicitudes-vacio h2 { color: var(--verde-oscuro); }
+
+    @media (max-width: 800px) {
+        .solicitudes-pagina .informacion-solicitud { grid-template-columns: 1fr; }
+        .solicitudes-pagina .seguimiento-solicitud { grid-template-columns: 36px minmax(0, 1fr); }
+    }
+    @media (max-width: 600px) {
+        .solicitudes-pagina .encabezado-solicitudes {
+            align-items: flex-start;
+            flex-direction: column;
+            padding: 20px;
+        }
+        .solicitudes-pagina .encabezado-solicitudes h1 { font-size: 24px; }
+        .solicitudes-pagina .encabezado-solicitudes > div::after { display: none; }
+        .solicitudes-pagina .encabezado-solicitudes .boton { width: 100%; justify-content: center; }
+        .solicitudes-pagina .solicitud-encabezado {
+            grid-template-columns: 40px minmax(0, 1fr);
+            gap: 10px;
+            padding: 14px;
+        }
+        .solicitudes-pagina .solicitud-icono { width: 40px; height: 40px; }
+        .solicitudes-pagina .solicitud-encabezado .estado-solicitud {
+            grid-column: 2;
+            justify-self: start;
+        }
+        .solicitudes-pagina .solicitud-contenido { padding: 0 14px 14px; }
+        .solicitudes-pagina .seguimiento-solicitud { grid-template-columns: 1fr; }
+        .solicitudes-pagina .seguimiento-solicitud .acciones-solicitud { grid-column: 1; }
+        .solicitudes-pagina .seguimiento-solicitud .acciones-solicitud .boton { width: 100%; justify-content: center; }
+        .solicitudes-pagina .valoracion-solicitud > div:nth-child(2) { min-width: 0; }
+        .solicitudes-pagina .valoracion-solicitud .boton { width: 100%; justify-content: center; }
+        .solicitudes-pagina .solicitud-pie { padding: 12px 14px; }
+        .solicitudes-pagina .solicitud-pie .boton { width: 100%; justify-content: center; }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 
-    <section class="solicitudes-pagina">
+<section class="solicitudes-pagina">
 
     <header class="encabezado-solicitudes">
         <div>
@@ -18,11 +207,9 @@
             </p>
         </div>
 
-        <a
-            href="{% url 'lista_objetos' %}"
-            class="boton boton-principal"
-        >
-            + Buscar objetos
+        <a href="{% url 'lista_objetos' %}" class="boton">
+            <i data-lucide="search" class="lucide-icon" aria-hidden="true"></i>
+            Buscar objetos
         </a>
     </header>
 
@@ -34,6 +221,7 @@
 
                 <article class="tarjeta-solicitud">
 
+                    <!-- ENCABEZADO -->
                     <div class="solicitud-encabezado">
 
                         <div class="solicitud-icono">
@@ -41,9 +229,7 @@
                         </div>
 
                         <div class="solicitud-titulo">
-                            <span class="solicitud-etiqueta">
-                                SOLICITUD
-                            </span>
+                            <span class="solicitud-etiqueta">SOLICITUD</span>
 
                             <h2>{{ solicitud.objeto.nombre }}</h2>
 
@@ -61,38 +247,32 @@
 
                     <div class="solicitud-contenido">
 
+                        <!-- DATOS -->
                         <div class="informacion-solicitud">
 
                             <div class="dato-solicitud">
                                 <span class="dato-icono"><i data-lucide="calendar-days" class="lucide-icon" aria-hidden="true"></i></span>
 
                                 <div>
-                                    <span class="dato-label">
-                                        Fecha de solicitud
-                                    </span>
-
-                                    <strong>{{ solicitud.fecha_solicitud }}</strong>
+                                    <span class="dato-label">Fecha de solicitud</span>
+                                    <strong>{{ solicitud.fecha_solicitud|date:"d/m/Y" }}</strong>
                                 </div>
                             </div>
 
                             {% if solicitud.mensaje %}
-                                <div class="dato-solicitud">
+                                <div class="dato-solicitud dato-mensaje">
                                     <span class="dato-icono"><i data-lucide="message-circle" class="lucide-icon" aria-hidden="true"></i></span>
 
                                     <div>
-                                        <span class="dato-label">
-                                            Tu mensaje
-                                        </span>
-
-                                        <p class="mensaje-solicitud">
-                                            {{ solicitud.mensaje }}
-                                        </p>
+                                        <span class="dato-label">Tu mensaje</span>
+                                        <p class="mensaje-solicitud">{{ solicitud.mensaje|linebreaksbr }}</p>
                                     </div>
                                 </div>
                             {% endif %}
 
                         </div>
 
+                        <!-- CONTACTO (aceptada / cumplida / no cumplida) -->
                         {% if solicitud.estado == "aceptada" or solicitud.estado == "cumplida" or solicitud.estado == "no_cumplida" %}
                             <div class="contacto-solicitud">
 
@@ -111,26 +291,20 @@
                                 <div class="contacto-datos">
                                     <div>
                                         <span>Usuario</span>
-                                        <strong>
-                                            {{ solicitud.objeto.usuario.username }}
-                                        </strong>
+                                        <strong>{{ solicitud.objeto.usuario.username }}</strong>
                                     </div>
 
                                     {% if solicitud.objeto.usuario.perfil.telefono %}
                                         <div>
                                             <span>Teléfono</span>
-                                            <strong>
-                                                {{ solicitud.objeto.usuario.perfil.telefono }}
-                                            </strong>
+                                            <strong>{{ solicitud.objeto.usuario.perfil.telefono }}</strong>
                                         </div>
                                     {% endif %}
 
                                     {% if solicitud.objeto.usuario.perfil.ubicacion %}
                                         <div>
                                             <span>Ubicación</span>
-                                            <strong>
-                                                {{ solicitud.objeto.usuario.perfil.ubicacion }}
-                                            </strong>
+                                            <strong>{{ solicitud.objeto.usuario.perfil.ubicacion }}</strong>
                                         </div>
                                     {% endif %}
                                 </div>
@@ -138,10 +312,13 @@
                             </div>
                         {% endif %}
 
+                        <!-- SEGUIMIENTO (solo aceptada) -->
                         {% if solicitud.estado == "aceptada" %}
                             <div class="seguimiento-solicitud">
 
-                                <div class="seguimiento-icono"><i data-lucide="leaf" class="lucide-icon" aria-hidden="true"></i></div>
+                                <div class="seguimiento-icono">
+                                    <i data-lucide="leaf" class="lucide-icon" aria-hidden="true"></i>
+                                </div>
 
                                 <div class="seguimiento-texto">
                                     <h3>¿Se realizó el acuerdo?</h3>
@@ -155,12 +332,10 @@
                                     <form
                                         method="POST"
                                         action="{% url 'marcar_solicitud' solicitud.id 'cumplida' %}"
+                                        onsubmit="return confirm('¿Confirmas que el acuerdo se cumplió?');"
                                     >
                                         {% csrf_token %}
-                                        <button
-                                            type="submit"
-                                            class="boton boton-exito"
-                                        >
+                                        <button type="submit" class="boton boton-exito">
                                             <i data-lucide="check" class="lucide-icon" aria-hidden="true"></i>
                                             Marcar como cumplido
                                         </button>
@@ -169,12 +344,11 @@
                                     <form
                                         method="POST"
                                         action="{% url 'marcar_solicitud' solicitud.id 'no_cumplida' %}"
+                                        onsubmit="return confirm('¿Confirmas que el acuerdo no se cumplió?');"
                                     >
                                         {% csrf_token %}
-                                        <button
-                                            type="submit"
-                                            class="boton boton-secundario"
-                                        >
+                                        <button type="submit" class="boton boton-secundario">
+                                            <i data-lucide="x" class="lucide-icon" aria-hidden="true"></i>
                                             Marcar como no cumplido
                                         </button>
                                     </form>
@@ -183,11 +357,14 @@
                             </div>
                         {% endif %}
 
+                        <!-- VALORACIÓN (cumplida / no cumplida) -->
                         {% if solicitud.estado == "cumplida" or solicitud.estado == "no_cumplida" %}
                             <div class="valoracion-solicitud">
 
                                 {% if not solicitud.valoraciones_del_usuario %}
-                                    <div class="valoracion-icono"><i data-lucide="star" class="lucide-icon" aria-hidden="true"></i></div>
+                                    <div class="valoracion-icono">
+                                        <i data-lucide="star" class="lucide-icon" aria-hidden="true"></i>
+                                    </div>
 
                                     <div>
                                         <h3>¿Cómo fue tu experiencia?</h3>
@@ -202,17 +379,14 @@
                                         class="boton boton-valoracion"
                                     >
                                         <i data-lucide="star" class="lucide-icon" aria-hidden="true"></i>
-                                        Valorar a
-                                        {{ solicitud.objeto.usuario.username }}
+                                        Valorar a {{ solicitud.objeto.usuario.username }}
                                     </a>
                                 {% else %}
                                     <div class="valoracion-completada">
                                         <span><i data-lucide="star" class="lucide-icon" aria-hidden="true"></i></span>
 
                                         <div>
-                                            <strong>
-                                                Ya has valorado a esta persona.
-                                            </strong>
+                                            <strong>Ya has valorado a esta persona.</strong>
                                             <p>
                                                 Gracias por ayudar a construir
                                                 una comunidad de confianza.
@@ -231,7 +405,7 @@
                             href="{% url 'detalle_objeto' solicitud.objeto.id %}"
                             class="boton boton-outline"
                         >
-                            Ver objeto →
+                            Ver objeto <span aria-hidden="true">→</span>
                         </a>
                     </footer>
 
@@ -243,12 +417,12 @@
 
     {% else %}
 
-        <article class="solicitudes-vacio">
-            <div class="vacio-icono"><i data-lucide="leaf" class="lucide-icon" aria-hidden="true"></i></div>
+        <div class="solicitudes-vacio">
+            <div class="vacio-icono">
+                <i data-lucide="leaf" class="lucide-icon" aria-hidden="true"></i>
+            </div>
 
-            <span class="seccion-etiqueta">
-                TODAVÍA NO HAY ACTIVIDAD
-            </span>
+            <span class="seccion-etiqueta">TODAVÍA NO HAY ACTIVIDAD</span>
 
             <h2>No tienes solicitudes todavía</h2>
 
@@ -257,16 +431,14 @@
                 y envía tu primera solicitud.
             </p>
 
-            <a
-                class="boton boton-principal"
-                href="{% url 'lista_objetos' %}"
-            >
+            <a class="boton" href="{% url 'lista_objetos' %}">
+                <i data-lucide="search" class="lucide-icon" aria-hidden="true"></i>
                 Buscar objetos
             </a>
-        </article>
+        </div>
 
     {% endif %}
 
-    </section>
+</section>
 
 {% endblock %}

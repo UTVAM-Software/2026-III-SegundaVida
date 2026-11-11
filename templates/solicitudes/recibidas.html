@@ -1,187 +1,220 @@
 {% extends "base.html" %}
 
-{% block title %}
-    Solicitudes recibidas | Segunda Vida
+{% block title %}Solicitudes recibidas | Segunda Vida{% endblock %}
+
+{% block extra_head %}
+<style>
+    .centro-solicitudes { max-width: 1180px; margin: 0 auto; }
+    .banner-solicitudes {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        margin-bottom: 24px;
+        padding: 26px 30px;
+        overflow: hidden;
+        background: linear-gradient(135deg, var(--verde-muy-suave), #e5ede7);
+        border: 1px solid var(--borde-verde);
+        border-radius: var(--radio-grande);
+    }
+    .banner-solicitudes h1 { display: flex; align-items: center; gap: 10px; margin: 0 0 6px; color: var(--verde-oscuro); font-size: 28px; }
+    .banner-solicitudes p { margin: 0; color: var(--texto-secundario); font-size: 14px; }
+    .frase-solicitudes { max-width: 230px; color: var(--verde-principal); font-family: Georgia, serif; font-size: 15px; font-style: italic; text-align: right; }
+    .panel-solicitudes { padding: 22px; background: var(--blanco); border: 1px solid var(--borde); border-radius: var(--radio-grande); box-shadow: var(--sombra-suave); }
+    .panel-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 4px; }
+    .panel-header h2 { display: flex; align-items: center; gap: 9px; margin: 0; color: var(--verde-oscuro); font-size: 19px; }
+    .contador-solicitudes { padding: 5px 10px; color: var(--verde-principal); background: var(--verde-muy-suave); border-radius: 999px; font-size: 12px; font-weight: 700; }
+    .panel-subtitulo { margin: 0 0 18px; color: var(--texto-suave); font-size: 13px; }
+    .lista-cards-solicitudes { display: flex; flex-direction: column; gap: 14px; }
+    .card-solicitud-row { display: grid; grid-template-columns: 58px minmax(0, 1fr); align-items: start; gap: 14px; padding: 17px; background: var(--blanco); border: 1px solid var(--borde); border-radius: var(--radio); transition: box-shadow var(--transicion), border-color var(--transicion); }
+    .card-solicitud-row:hover { border-color: var(--borde-verde); box-shadow: var(--sombra-suave); }
+    .img-solicitud-thumb { display: flex; width: 58px; height: 58px; align-items: center; justify-content: center; color: var(--verde-principal); background: var(--verde-muy-suave); border-radius: var(--radio-pequeno); }
+    .img-solicitud-thumb .lucide-icon { width: 24px; height: 24px; }
+    .info-solicitud-main { min-width: 0; }
+    .solicitud-card-topline { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+    .nombre-objeto-solicitud { margin: 0; color: var(--verde-oscuro); font-size: 16px; line-height: 1.4; overflow-wrap: anywhere; }
+    .user-solicitante-line, .fecha-solicitud-meta { display: flex; align-items: center; gap: 6px; color: var(--texto-secundario); font-size: 12px; }
+    .user-solicitante-line { margin-top: 5px; }
+    .user-solicitante-line a { color: var(--verde-principal); text-decoration: none; }
+    .user-solicitante-line a:hover { text-decoration: underline; }
+    .fecha-solicitud-meta { margin-top: 8px; color: var(--texto-suave); font-size: 11px; }
+    .mensaje-preview-corta { margin: 11px 0 0; padding: 11px 13px; color: var(--texto-secundario); background: var(--fondo); border-radius: var(--radio-pequeno); font-size: 13px; line-height: 1.55; overflow-wrap: anywhere; }
+    .badge-status { display: inline-flex; flex: 0 0 auto; align-items: center; padding: 5px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+    .status-pendiente { color: var(--advertencia); background: var(--advertencia-suave); }
+    .status-aceptada { color: var(--exito); background: var(--exito-suave); }
+    .status-rechazada { color: var(--error); background: var(--error-suave); }
+    .status-cumplida { color: var(--verde-principal); background: var(--verde-muy-suave); }
+    .status-no_cumplida { color: var(--terracota-oscuro); background: #F1E8E3; }
+    .bloque-contacto, .decision-solicitud, .valoracion-solicitud { display: flex; align-items: flex-start; gap: 12px; margin-top: 14px; padding: 13px; border-radius: var(--radio); }
+    .bloque-contacto { background: var(--verde-muy-suave); }
+    .decision-solicitud { align-items: center; background: var(--fondo); }
+    .valoracion-solicitud { align-items: center; justify-content: space-between; flex-wrap: wrap; background: var(--dorado-suave); }
+    .bloque-icono { display: flex; width: 34px; height: 34px; flex: 0 0 34px; align-items: center; justify-content: center; color: var(--verde-principal); background: var(--blanco); border-radius: 50%; }
+    .bloque-icono .lucide-icon { width: 18px; height: 18px; }
+    .bloque-texto { min-width: 0; flex: 1; }
+    .bloque-texto h3 { margin: 0 0 3px; color: var(--verde-oscuro); font-size: 13px; }
+    .bloque-texto p { margin: 0; color: var(--texto-secundario); font-size: 12px; line-height: 1.5; }
+    .contacto-datos { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 9px; }
+    .contacto-datos > div { display: flex; flex-direction: column; gap: 2px; }
+    .contacto-datos span { color: var(--texto-suave); font-size: 10px; }
+    .contacto-datos strong { color: var(--texto); font-size: 12px; overflow-wrap: anywhere; }
+    .acciones-solicitud { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+    .acciones-solicitud form { margin: 0; }
+    .acciones-solicitud .boton, .boton-valoracion { min-height: 36px; padding: 8px 13px; border-radius: 999px; font-size: 12px; }
+    .boton-valoracion { display: inline-flex; align-items: center; gap: 6px; color: var(--dorado-contraste); background: var(--blanco); border: 1px solid var(--dorado-borde); text-decoration: none; }
+    .boton-valoracion:hover { background: var(--dorado-suave); }
+    .valoracion-completada { display: flex; align-items: center; gap: 10px; color: var(--dorado-contraste); }
+    .valoracion-completada .lucide-icon { width: 20px; height: 20px; }
+    .valoracion-completada strong { font-size: 12px; }
+    .valoracion-completada p { margin: 2px 0 0; color: var(--texto-secundario); font-size: 11px; }
+    .solicitud-pie { display: flex; justify-content: flex-end; margin-top: 12px; }
+    .solicitud-pie .boton { min-height: 34px; padding: 7px 12px; border-radius: 999px; font-size: 12px; }
+    .sin-solicitudes { padding: 42px 18px; color: var(--texto-secundario); text-align: center; }
+    .sin-solicitudes > .lucide-icon { width: 34px; height: 34px; margin-bottom: 10px; color: var(--verde-principal); }
+    .sin-solicitudes h3 { margin: 0 0 6px; color: var(--verde-oscuro); font-size: 17px; }
+    .sin-solicitudes p { margin: 0 0 16px; font-size: 13px; }
+    @media (max-width: 600px) {
+        .banner-solicitudes { align-items: flex-start; padding: 20px; }
+        .banner-solicitudes h1 { font-size: 24px; }
+        .frase-solicitudes { display: none; }
+        .panel-solicitudes { padding: 15px; }
+        .card-solicitud-row { grid-template-columns: 44px minmax(0, 1fr); gap: 10px; padding: 12px; }
+        .img-solicitud-thumb { width: 44px; height: 44px; }
+        .img-solicitud-thumb .lucide-icon { width: 20px; height: 20px; }
+        .solicitud-card-topline { flex-direction: column-reverse; align-items: flex-start; }
+        .decision-solicitud { flex-wrap: wrap; }
+        .acciones-solicitud { justify-content: flex-start; width: 100%; }
+        .acciones-solicitud .boton { flex: 1; justify-content: center; }
+        .solicitud-pie { justify-content: stretch; }
+        .solicitud-pie .boton { width: 100%; justify-content: center; }
+    }
+
+    /* Ajustes para convivir con las reglas globales de base.html */
+    .decision-solicitud { border: 0; text-align: left; }
+    .valoracion-solicitud { text-align: left; }
+    .solicitud-pie { padding: 0; background: transparent; border: 0; }
+    main a.boton-valoracion { color: var(--dorado-contraste); font-weight: 600; margin-left: 0; }
+    main a.boton-valoracion:hover { color: var(--dorado-contraste-oscuro); background: var(--dorado-suave); }
+    .acciones-solicitud .boton-secundario { background: transparent; }
+    @media (max-width: 600px) {
+        .decision-solicitud, .valoracion-solicitud { text-align: left; }
+    }
+</style>
 {% endblock %}
 
 {% block content %}
 
-    <section class="solicitudes-pagina">
+<section class="centro-solicitudes">
+    <header class="banner-solicitudes">
+        <div>
+            <h1><i data-lucide="inbox" class="lucide-icon" aria-hidden="true"></i> Solicitudes recibidas</h1>
+            <p>Revisa las personas interesadas en darle una segunda vida a tus objetos.</p>
+        </div>
+        <div class="frase-solicitudes">“Dar una segunda vida también conecta personas.”</div>
+    </header>
 
-        <header class="encabezado-solicitudes">
-            <div>
-                <span class="seccion-etiqueta">MI ACTIVIDAD</span>
-                <h1>Solicitudes recibidas</h1>
-                <p>
-                    Revisa las personas interesadas en darle una segunda vida
-                    a tus objetos.
-                </p>
-            </div>
-
-            <a
-                href="{% url 'lista_objetos' %}"
-                class="boton boton-outline"
-            >
-                <i data-lucide="search" class="lucide-icon" aria-hidden="true"></i>
-                Explorar objetos
-            </a>
-        </header>
+    <section class="panel-solicitudes" aria-labelledby="solicitudes-recibidas-titulo">
+        <div class="panel-header">
+            <h2 id="solicitudes-recibidas-titulo">
+                <i data-lucide="inbox" class="lucide-icon" aria-hidden="true"></i>
+                Solicitudes recibidas
+            </h2>
+            <span class="contador-solicitudes">{{ solicitudes|length }}</span>
+        </div>
+        <p class="panel-subtitulo">Solicitudes para los objetos que has publicado.</p>
 
         {% if solicitudes %}
-
-            <div class="lista-solicitudes">
-
+            <div class="lista-cards-solicitudes">
                 {% for solicitud in solicitudes %}
-
-                    <article class="tarjeta-solicitud">
-
-                        <div class="solicitud-encabezado">
-
-                            <div class="solicitud-icono">
-                                <i data-lucide="package" class="lucide-icon" aria-hidden="true"></i>
-                            </div>
-
-                            <div class="solicitud-titulo">
-                                <span class="solicitud-etiqueta">
-                                    SOLICITUD RECIBIDA
-                                </span>
-
-                                <h2>{{ solicitud.objeto.nombre }}</h2>
-
-                                <p>
-                                    Solicitado por
-                                    <strong>{{ solicitud.usuario.username }}</strong>
-                                </p>
-                            </div>
-
-                            <div class="estado-solicitud estado-{{ solicitud.estado }}">
-                                {{ solicitud.get_estado_display }}
-                            </div>
-
+                    <article class="card-solicitud-row">
+                        <div class="img-solicitud-thumb" aria-hidden="true">
+                            <i data-lucide="package" class="lucide-icon"></i>
                         </div>
 
-                        <div class="solicitud-contenido">
-
-                            <div class="informacion-solicitud">
-
-                                <div class="dato-solicitud">
-                                    <span class="dato-icono">
-                                        <i data-lucide="user" class="lucide-icon" aria-hidden="true"></i>
-                                    </span>
-
-                                    <div>
-                                        <span class="dato-label">Solicitante</span>
-                                        <strong>{{ solicitud.usuario.username }}</strong>
-                                    </div>
-                                </div>
-
-                                <div class="dato-solicitud">
-                                    <span class="dato-icono">
-                                        <i data-lucide="calendar-days" class="lucide-icon" aria-hidden="true"></i>
-                                    </span>
-
-                                    <div>
-                                        <span class="dato-label">Fecha de solicitud</span>
-                                        <strong>{{ solicitud.fecha_solicitud }}</strong>
-                                    </div>
-                                </div>
-
-                                {% if solicitud.mensaje %}
-                                    <div class="dato-solicitud dato-mensaje">
-                                        <span class="dato-icono">
-                                            <i data-lucide="message-circle" class="lucide-icon" aria-hidden="true"></i>
-                                        </span>
-
-                                        <div>
-                                            <span class="dato-label">Mensaje</span>
-                                            <p class="mensaje-solicitud">
-                                                {{ solicitud.mensaje }}
-                                            </p>
-                                        </div>
-                                    </div>
-                                {% endif %}
-
+                        <div class="info-solicitud-main">
+                            <div class="solicitud-card-topline">
+                                <h3 class="nombre-objeto-solicitud">{{ solicitud.objeto.nombre }}</h3>
+                                <span class="badge-status status-{{ solicitud.estado }}">{{ solicitud.get_estado_display }}</span>
                             </div>
 
+                            <div class="user-solicitante-line">
+                                <i data-lucide="user-round" class="lucide-icon" aria-hidden="true"></i>
+                                Solicitado por
+                                <a href="{% url 'perfil_publico' solicitud.usuario.username %}">
+                                    <strong>{{ solicitud.usuario.username }}</strong>
+                                </a>
+                            </div>
+
+                            <div class="fecha-solicitud-meta">
+                                <i data-lucide="calendar-days" class="lucide-icon" aria-hidden="true"></i>
+                                {{ solicitud.fecha_solicitud|date:"d/m/Y" }}
+                            </div>
+
+                            {% if solicitud.mensaje %}
+                                <div class="mensaje-preview-corta">
+                                    <strong>Mensaje:</strong>
+                                    {{ solicitud.mensaje|linebreaksbr }}
+                                </div>
+                            {% endif %}
+
                             {% if solicitud.estado == "aceptada" or solicitud.estado == "cumplida" or solicitud.estado == "no_cumplida" %}
-                                <div class="contacto-solicitud">
-
-                                    <div class="contacto-encabezado">
-                                        <span class="contacto-icono">
-                                            <i data-lucide="handshake" class="lucide-icon" aria-hidden="true"></i>
-                                        </span>
-
-                                        <div>
-                                            <h3>Contacto para el acuerdo</h3>
-                                            <p>
-                                                La solicitud fue aceptada.
-                                                Estos son los datos del solicitante.
-                                            </p>
+                                <div class="bloque-contacto">
+                                    <span class="bloque-icono" aria-hidden="true">
+                                        <i data-lucide="handshake" class="lucide-icon"></i>
+                                    </span>
+                                    <div class="bloque-texto">
+                                        <h3>Contacto para el acuerdo</h3>
+                                        <p>La solicitud fue aceptada. Estos son los datos del solicitante.</p>
+                                        <div class="contacto-datos">
+                                            <div>
+                                                <span>Usuario</span>
+                                                <strong>{{ solicitud.usuario.username }}</strong>
+                                            </div>
+                                            {% if solicitud.usuario.perfil.telefono %}
+                                                <div>
+                                                    <span>Teléfono</span>
+                                                    <strong>{{ solicitud.usuario.perfil.telefono }}</strong>
+                                                </div>
+                                            {% endif %}
+                                            {% if solicitud.usuario.perfil.ubicacion %}
+                                                <div>
+                                                    <span>Ubicación</span>
+                                                    <strong>{{ solicitud.usuario.perfil.ubicacion }}</strong>
+                                                </div>
+                                            {% endif %}
                                         </div>
                                     </div>
-
-                                    <div class="contacto-datos">
-                                        <div>
-                                            <span>Usuario</span>
-                                            <strong>{{ solicitud.usuario.username }}</strong>
-                                        </div>
-
-                                        {% if solicitud.usuario.perfil.telefono %}
-                                            <div>
-                                                <span>Teléfono</span>
-                                                <strong>{{ solicitud.usuario.perfil.telefono }}</strong>
-                                            </div>
-                                        {% endif %}
-
-                                        {% if solicitud.usuario.perfil.ubicacion %}
-                                            <div>
-                                                <span>Ubicación</span>
-                                                <strong>{{ solicitud.usuario.perfil.ubicacion }}</strong>
-                                            </div>
-                                        {% endif %}
-                                    </div>
-
                                 </div>
                             {% endif %}
 
                             {% if solicitud.estado == "pendiente" %}
                                 <div class="decision-solicitud">
-                                    <div class="decision-icono">
-                                        <i data-lucide="message-square-more" class="lucide-icon" aria-hidden="true"></i>
-                                    </div>
-
-                                    <div class="decision-texto">
+                                    <span class="bloque-icono" aria-hidden="true">
+                                        <i data-lucide="message-square-more" class="lucide-icon"></i>
+                                    </span>
+                                    <div class="bloque-texto">
                                         <h3>Esta persona está interesada</h3>
-                                        <p>
-                                            Revisa la solicitud y decide si deseas
-                                            aceptar el acuerdo.
-                                        </p>
+                                        <p>Revisa la solicitud y decide si deseas aceptar el acuerdo.</p>
                                     </div>
-
                                     <div class="acciones-solicitud">
                                         <form
                                             method="POST"
                                             action="{% url 'aceptar_solicitud' solicitud.id %}"
+                                            onsubmit="return confirm('¿Aceptar esta solicitud? Se compartirán tus datos de contacto con el solicitante.');"
                                         >
                                             {% csrf_token %}
-                                            <button
-                                                class="boton boton-exito"
-                                                type="submit"
-                                            >
+                                            <button class="boton boton-exito" type="submit">
                                                 <i data-lucide="check" class="lucide-icon" aria-hidden="true"></i>
                                                 Aceptar
                                             </button>
                                         </form>
-
                                         <form
                                             method="POST"
                                             action="{% url 'rechazar_solicitud' solicitud.id %}"
+                                            onsubmit="return confirm('¿Rechazar esta solicitud?');"
                                         >
                                             {% csrf_token %}
-                                            <button
-                                                class="boton boton-rechazar"
-                                                type="submit"
-                                            >
+                                            <button class="boton boton-rechazar" type="submit">
                                                 <i data-lucide="x" class="lucide-icon" aria-hidden="true"></i>
                                                 Rechazar
                                             </button>
@@ -192,22 +225,13 @@
 
                             {% if solicitud.estado == "cumplida" or solicitud.estado == "no_cumplida" %}
                                 <div class="valoracion-solicitud">
-
                                     {% if not solicitud.valoraciones_del_usuario %}
-                                        <div class="valoracion-icono">
-                                            <i data-lucide="star" class="lucide-icon" aria-hidden="true"></i>
-                                        </div>
-
-                                        <div>
+                                        <div class="bloque-texto">
                                             <h3>¿Cómo fue tu experiencia?</h3>
-                                            <p>
-                                                Tu valoración ayuda a construir
-                                                una comunidad de confianza.
-                                            </p>
+                                            <p>Tu valoración ayuda a construir una comunidad de confianza.</p>
                                         </div>
-
                                         <a
-                                            class="boton boton-valoracion"
+                                            class="boton-valoracion"
                                             href="{% url 'valorar_solicitud' solicitud.id %}"
                                         >
                                             <i data-lucide="star" class="lucide-icon" aria-hidden="true"></i>
@@ -215,68 +239,37 @@
                                         </a>
                                     {% else %}
                                         <div class="valoracion-completada">
-                                            <span>
-                                                <i data-lucide="star" class="lucide-icon" aria-hidden="true"></i>
-                                            </span>
-
+                                            <i data-lucide="star" class="lucide-icon" aria-hidden="true"></i>
                                             <div>
                                                 <strong>Ya has valorado a esta persona.</strong>
-                                                <p>
-                                                    Gracias por ayudar a construir
-                                                    una comunidad de confianza.
-                                                </p>
+                                                <p>Gracias por ayudar a construir una comunidad de confianza.</p>
                                             </div>
                                         </div>
                                     {% endif %}
-
                                 </div>
                             {% endif %}
 
+                            <footer class="solicitud-pie">
+                                <a class="boton boton-outline" href="{% url 'detalle_objeto' solicitud.objeto.id %}">
+                                    <i data-lucide="eye" class="lucide-icon" aria-hidden="true"></i>
+                                    Ver objeto
+                                </a>
+                            </footer>
                         </div>
-
-                        <footer class="solicitud-pie">
-                            <a
-                                class="boton boton-outline"
-                                href="{% url 'detalle_objeto' solicitud.objeto.id %}"
-                            >
-                                <i data-lucide="eye" class="lucide-icon" aria-hidden="true"></i>
-                                Ver objeto
-                            </a>
-                        </footer>
-
                     </article>
-
                 {% endfor %}
-
             </div>
-
         {% else %}
-
-            <article class="solicitudes-vacio">
-                <div class="vacio-icono">
-                    <i data-lucide="inbox" class="lucide-icon" aria-hidden="true"></i>
-                </div>
-
-                <span class="seccion-etiqueta">TODO TRANQUILO POR AQUÍ</span>
-
-                <h2>No tienes solicitudes recibidas</h2>
-
-                <p>
-                    Cuando alguien se interese por uno de tus objetos,
-                    su solicitud aparecerá aquí.
-                </p>
-
-                <a
-                    class="boton boton-principal"
-                    href="{% url 'mis_objetos' %}"
-                >
+            <div class="sin-solicitudes">
+                <i data-lucide="inbox" class="lucide-icon" aria-hidden="true"></i>
+                <h3>No tienes solicitudes recibidas</h3>
+                <p>Cuando alguien se interese por uno de tus objetos, su solicitud aparecerá aquí.</p>
+                <a class="boton" href="{% url 'mis_objetos' %}">
                     <i data-lucide="package" class="lucide-icon" aria-hidden="true"></i>
                     Ver mis objetos
                 </a>
-            </article>
-
+            </div>
         {% endif %}
-
     </section>
-
+</section>
 {% endblock %}
