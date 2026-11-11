@@ -197,12 +197,67 @@ button:focus-visible,
     background-color: var(--verde-muy-suave);
 }
 
+.nav-menu {
+    position: relative;
+}
+
+.nav-menu-trigger {
+    gap: 7px;
+    border: 0;
+    background: transparent;
+    font: inherit;
+    cursor: pointer;
+    list-style: none;
+}
+
+.nav-menu-trigger::-webkit-details-marker {
+    display: none;
+}
+
+.nav-menu-trigger::after {
+    width: 7px;
+    height: 7px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    content: "";
+    transform: translateY(-2px) rotate(45deg);
+    transition: transform var(--transicion);
+}
+
+.nav-menu[open] > .nav-menu-trigger::after {
+    transform: translateY(2px) rotate(225deg);
+}
+
+.nav-menu-panel {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: 110;
+    display: grid;
+    min-width: 220px;
+    padding: 8px;
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    background-color: var(--blanco);
+    box-shadow: var(--sombra-media);
+}
+
+.nav-menu-panel .nav-enlace {
+    justify-content: flex-start;
+    width: 100%;
+    text-align: left;
+}
+
 .nav-notificaciones {
     position: relative;
     border: none;
     background: transparent;
     font-family: inherit;
     cursor: pointer;
+}
+
+.nav-menu-panel .nav-notificaciones {
+    gap: 8px;
 }
 
 .nav-perfil {
@@ -913,6 +968,13 @@ main .volver a:hover {
     .navegacion {
         width: 100%;
         justify-content: flex-start;
+        gap: 4px;
+    }
+
+    .nav-menu-panel {
+        right: auto;
+        left: 0;
+        max-width: calc(100vw - 32px);
     }
 
     .hero-inicio {
@@ -2496,6 +2558,131 @@ main .volver a:hover {
     }
 
     .acciones-filtros .boton {
+        width: 100%;
+    }
+}
+
+.filtros-objetos {
+    padding: 24px;
+    background: linear-gradient(135deg, var(--blanco), var(--verde-muy-suave));
+    border-color: var(--borde-verde);
+}
+
+.filtros-objetos .formulario-filtros {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: stretch;
+    gap: 16px;
+}
+
+.filtros-objetos .buscador,
+.filtros-objetos .acciones-filtros {
+    grid-column: 1 / -1;
+}
+
+.filtros-objetos .buscador label,
+.filtros-objetos .filtro > label:first-child {
+    display: block;
+    margin: 0 0 8px;
+    color: var(--texto);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: none;
+}
+
+.filtros-objetos .buscador input {
+    width: 100%;
+    height: 48px;
+    padding: 0 15px;
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    background-color: var(--blanco);
+}
+
+.filtros-objetos .buscador input:focus {
+    border-color: var(--verde-medio);
+    outline: 2px solid var(--verde-suave);
+}
+
+.filtros-objetos .filtro {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: 8px;
+    min-width: 0;
+    padding: 14px;
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    background-color: rgba(255, 255, 255, 0.72);
+}
+
+.filtros-objetos .filtro > label:first-child {
+    flex-basis: 100%;
+}
+
+.filtros-objetos .filtro > label:not(:first-child) {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin: 0;
+    padding: 6px 10px;
+    border: 1px solid var(--borde);
+    border-radius: 999px;
+    background-color: var(--blanco);
+    color: var(--texto-secundario);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: none;
+    cursor: pointer;
+    transition: border-color var(--transicion), background-color var(--transicion), color var(--transicion);
+}
+
+.filtros-objetos .filtro > label:not(:first-child):hover {
+    border-color: var(--borde-verde);
+    background-color: var(--verde-muy-suave);
+    color: var(--verde-oscuro);
+}
+
+.filtros-objetos .filtro input[type="checkbox"] {
+    width: 15px;
+    height: 15px;
+    margin: 0;
+    accent-color: var(--verde-principal);
+    cursor: pointer;
+}
+
+.filtros-objetos .acciones-filtros {
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.filtros-objetos .acciones-filtros .boton {
+    min-width: 120px;
+    border-radius: var(--radio);
+}
+
+@media (max-width: 800px) {
+    .filtros-objetos .formulario-filtros {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .filtros-objetos {
+        padding: 18px;
+    }
+
+    .filtros-objetos .formulario-filtros {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 12px;
+    }
+
+    .filtros-objetos .acciones-filtros {
+        flex-direction: column;
+    }
+
+    .filtros-objetos .acciones-filtros .boton {
         width: 100%;
     }
 }
@@ -5472,20 +5659,29 @@ main .leaflet-bar a:not(.boton) {
 
                 {% if user.is_authenticated %}
 
-                    <a href="{% url 'mis_objetos' %}" class="nav-enlace">
-                        <i data-lucide="package" class="lucide-icon" aria-hidden="true"></i>
-                        Mis objetos
-                    </a>
+                    <details class="nav-menu">
+                        <summary class="nav-enlace nav-menu-trigger">
+                            <i data-lucide="layers" class="lucide-icon" aria-hidden="true"></i>
+                            Mi actividad
+                        </summary>
+                        <div class="nav-menu-panel">
+                            <a href="{% url 'mis_objetos' %}" class="nav-enlace">
+                                <i data-lucide="package" class="lucide-icon" aria-hidden="true"></i>
+                                Mis objetos
+                            </a>
 
-                    <a href="{% url 'mis_solicitudes' %}" class="nav-enlace">
-                        <i data-lucide="mail" class="lucide-icon" aria-hidden="true"></i>
-                        Solicitudes
-                    </a>
+                            <a href="{% url 'mis_solicitudes' %}" class="nav-enlace">
+                                <i data-lucide="mail" class="lucide-icon" aria-hidden="true"></i>
+                                Solicitudes
+                            </a>
 
-                    <a href="{% url 'solicitudes_recibidas' %}" class="nav-enlace">
-                        <i data-lucide="inbox" class="lucide-icon" aria-hidden="true"></i>
-                        Recibidas
-                    </a>
+                            <a href="{% url 'solicitudes_recibidas' %}" class="nav-enlace">
+                                <i data-lucide="inbox" class="lucide-icon" aria-hidden="true"></i>
+                                Recibidas
+                            </a>
+
+                        </div>
+                    </details>
 
                     <button
                         type="button"
@@ -5496,11 +5692,7 @@ main .leaflet-bar a:not(.boton) {
                         aria-controls="modal-notificaciones"
                     >
                         <i data-lucide="bell" class="lucide-icon" aria-hidden="true"></i>
-
-                        <span class="nav-texto-notificaciones">
-                            Notificaciones
-                        </span>
-
+                        <span class="nav-texto-notificaciones">Notificaciones</span>
                         {% if notificaciones_no_leidas > 0 %}
                             <span class="contador-notificaciones">
                                 {{ notificaciones_no_leidas }}
@@ -5514,10 +5706,22 @@ main .leaflet-bar a:not(.boton) {
                     </a>
 
                     {% if user.is_superuser %}
-                        <a href="{% url 'administrar_usuarios' %}" class="nav-enlace">
-                            <i data-lucide="users" class="lucide-icon" aria-hidden="true"></i>
-                            Administrar usuarios
-                        </a>
+                        <details class="nav-menu">
+                            <summary class="nav-enlace nav-menu-trigger">
+                                <i data-lucide="shield-check" class="lucide-icon" aria-hidden="true"></i>
+                                Administración
+                            </summary>
+                            <div class="nav-menu-panel">
+                                <a href="{% url 'administrar_usuarios' %}" class="nav-enlace">
+                                    <i data-lucide="users" class="lucide-icon" aria-hidden="true"></i>
+                                    Administrar usuarios
+                                </a>
+                                <a href="{% url 'administrar_lugares' %}" class="nav-enlace">
+                                    <i data-lucide="map-pinned" class="lucide-icon" aria-hidden="true"></i>
+                                    Administrar lugares
+                                </a>
+                            </div>
+                        </details>
                     {% endif %}
 
                     <a href="{% url 'perfil' %}" class="nav-perfil">

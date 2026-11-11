@@ -13,6 +13,10 @@ from objetos.views import (
     mis_objetos,
     lugares_segunda_vida,
     detalle_lugar,
+    administrar_lugares,
+    crear_lugar,
+    editar_lugar,
+    cambiar_estado_lugar,
 )
 
 from solicitudes.views import (
@@ -57,6 +61,27 @@ urlpatterns = [
     # Lugares de segunda vida
     path("lugares/", lugares_segunda_vida, name="lugares_segunda_vida"),
     path("lugares/<int:lugar_id>/", detalle_lugar, name="detalle_lugar"),
+    # Administración de lugares
+    path(
+        "administrar-lugares/",
+        administrar_lugares,
+        name="administrar_lugares",
+    ),
+    path(
+        "administrar-lugares/crear/",
+        crear_lugar,
+        name="crear_lugar",
+    ),
+    path(
+        "administrar-lugares/<int:lugar_id>/editar/",
+        editar_lugar,
+        name="editar_lugar",
+    ),
+    path(
+        "administrar-lugares/<int:lugar_id>/estado/",
+        cambiar_estado_lugar,
+        name="cambiar_estado_lugar",
+    ),
 
     # Solicitudes
     path("objetos/<int:id>/solicitar/", solicitar_objeto, name="solicitar_objeto"),

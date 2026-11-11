@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Administrar lugares | Segunda Vida{% endblock %}
+
+{% block content %}
+
+<section class="perfil-pagina">
+
+    <div class="perfil-seccion-encabezado">
+        <p class="seccion-etiqueta">ADMINISTRACIÓN</p>
+        <h1>Administrar lugares</h1>
+        <p>Registra y administra los espacios que promueven una Segunda Vida.</p>
+    </div>
+
+    <div class="perfil-seccion">
+
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:15px; flex-wrap:wrap;">
+            <h2>Lugares registrados</h2>
+
+            <a href="{% url 'crear_lugar' %}" class="boton">
+                <i data-lucide="plus" aria-hidden="true"></i>
+                Registrar lugar
+            </a>
+        </div>
+
+        {% for lugar in lugares %}
+
+            <div style="
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+                gap:15px;
+                padding:18px 0;
+                border-bottom:1px solid var(--borde);
+                flex-wrap:wrap;
+            ">
+
+                <div style="display:flex; align-items:center; gap:15px;">
+
+                    {% if lugar.imagen %}
+                        <img
+                            src="{{ lugar.imagen.url }}"
+                            alt="{{ lugar.nombre }}"
+                            style="width:75px; height:75px; object-fit:cover; border-radius:10px;"
+                        >
+                    {% else %}
+                        <div style="width:75px; height:75px; display:flex; align-items:center; justify-content:center; background:var(--fondo); border-radius:10px;">
+                            <i data-lucide="map-pin" aria-hidden="true"></i>
+                        </div>
+                    {% endif %}
+
+                    <div>
+                        <strong>{{ lugar.nombre }}</strong>
+
+                        <p style="margin:5px 0; color:var(--texto-secundario);">
+                            {{ lugar.get_tipo_display }}
+                        </p>
+
+                        {% if lugar.activo %}
+                            <span style="color:green;">Activo</span>
+                        {% else %}
+                            <span style="color:#b45309;">Desactivado</span>
+                        {% endif %}
+                    </div>
+
+                </div>
+
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+
+                    <a
+                        href="{% url 'editar_lugar' lugar.id %}"
+                        class="boton-secundario"
+                    >
+                        <i data-lucide="pencil" aria-hidden="true"></i>
+                        Editar
+                    </a>
+
+                    <form
+                        method="POST"
+                        action="{% url 'cambiar_estado_lugar' lugar.id %}"
+                        onsubmit="return confirm('¿Deseas cambiar el estado de este lugar?');"
+                    >
+                        {% csrf_token %}
+
+                        {% if lugar.activo %}
+                            <button type="submit" class="boton-secundario">
+                                Desactivar
+                            </button>
+                        {% else %}
+                            <button type="submit" class="boton">
+                                Reactivar
+                            </button>
+                        {% endif %}
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        {% empty %}
+
+            <p>No hay lugares registrados todavía.</p>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endblock %}
