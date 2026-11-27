@@ -9,7 +9,7 @@
     <div class="perfil-seccion-encabezado">
         <p class="seccion-etiqueta">ADMINISTRACIÓN</p>
         <h1>Administrar usuarios</h1>
-        <p>Consulta las cuentas registradas y administra sus permisos.</p>
+        <p>Consulta las cuentas registradas y administra sus permisos y estado.</p>
     </div>
 
     <div class="perfil-seccion">
@@ -19,41 +19,97 @@
         </div>
 
         {% for item in usuarios %}
-            <div style="display:flex; justify-content:space-between; align-items:center; gap:15px; padding:16px 0; border-bottom:1px solid var(--borde); flex-wrap:wrap;">
+
+            <div style="
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+                gap:15px;
+                padding:18px 0;
+                border-bottom:1px solid var(--borde);
+                flex-wrap:wrap;
+            ">
 
                 <div>
                     <strong>{{ item.usuario.username }}</strong>
+
                     <p style="margin:5px 0; color:var(--texto-secundario);">
-                        Rol actual: {{ item.rol }}
+                        Rol: {{ item.rol }}
+                    </p>
+
+                    <p style="margin:5px 0;">
+                        {% if item.usuario.is_active %}
+                            <span style="color:green;">Cuenta activa</span>
+                        {% else %}
+                            <span style="color:#b45309;">Cuenta desactivada</span>
+                        {% endif %}
                     </p>
                 </div>
 
-                {% if not item.usuario.is_superuser %}
+                {% if not item.usuario.is_superuser and item.usuario != request.user %}
 
-                    <form method="POST" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-                        {% csrf_token %}
+                    <div style="
+                        display:flex;
+                        gap:10px;
+                        align-items:center;
+                        flex-wrap:wrap;
+                    ">
 
-                        <input
-                            type="hidden"
-                            name="username"
-                            value="{{ item.usuario.username }}"
-                        >
+                        <form method="POST" style="display:flex; gap:8px; align-items:center;">
+                            {% csrf_token %}
 
-                        <select name="rol" required>
-                            {% for rol in roles %}
-                                <option
-                                    value="{{ rol }}"
-                                    {% if item.rol == rol %}selected{% endif %}
-                                >
-                                    {{ rol }}
-                                </option>
-                            {% endfor %}
-                        </select>
+                            <input type="hidden" name="username" value="{{ item.usuario.username }}">
+                            <input type="hidden" name="accion" value="cambiar_rol">
 
-                        <button type="submit" class="boton">
-                            Guardar
-                        </button>
-                    </form>
+                            <select name="rol" required>
+                                {% for rol in roles %}
+                                    <option value="{{ rol }}"
+                                        {% if item.rol == rol %}selected{% endif %}>
+                                        {{ rol }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+
+                            <button type="submit" class="boton">
+                                Guardar rol
+                            </button>
+                        </form>
+
+                        {% if item.usuario.is_active %}
+
+                            <form method="POST"
+                                  onsubmit="return confirm('¿Deseas desactivar esta cuenta?');">
+
+                                {% csrf_token %}
+
+                                <input type="hidden" name="username" value="{{ item.usuario.username }}">
+                                <input type="hidden" name="accion" value="desactivar">
+
+                                <button type="submit" class="boton">
+                                    Desactivar
+                                </button>
+
+                            </form>
+
+                        {% else %}
+
+                            <form method="POST"
+                                  onsubmit="return confirm('¿Deseas reactivar esta cuenta?');">
+
+                                {% csrf_token %}
+
+                                <input type="hidden" name="username" value="{{ item.usuario.username }}">
+                                <input type="hidden" name="accion" value="reactivar">
+
+                                <button type="submit" class="boton">
+                                    Reactivar
+                                </button>
+
+                            </form>
+
+                        {% endif %}
+
+                    </div>
 
                 {% else %}
 
@@ -62,8 +118,11 @@
                 {% endif %}
 
             </div>
+
         {% empty %}
+
             <p>No hay usuarios registrados.</p>
+
         {% endfor %}
 
     </div>

@@ -3,6 +3,7 @@ from django.db import models, transaction
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.http import HttpResponseForbidden
 
 from usuarios.permissions import roles_permitidos
 
@@ -10,8 +11,17 @@ import json
 from urllib.parse import quote
 from urllib.request import Request, urlopen
 
-from .forms import ObjetoForm, ImagenObjetoForm
-from .models import Objeto, Categoria, ImagenObjeto, LugarSegundaVida
+from .forms import (
+    ObjetoForm,
+    ImagenObjetoForm,
+    LugarSegundaVidaForm,
+)
+from .models import (
+    Objeto,
+    Categoria,
+    ImagenObjeto,
+    LugarSegundaVida,
+)
 from .utils import (
     calcular_material_reutilizado_estimado,
     calcular_material_reutilizado_comunidad,
@@ -548,3 +558,146 @@ def detalle_lugar(request, lugar_id):
             "lugar": lugar
         }
     )
+
+
+@login_required
+def administrar_lugares(request):
+
+    if not request.user.is_superuser:
+        return HttpResponseForbidden(
+            "No tienes permiso para administrar lugares."
+        )
+
+    lugares = LugarSegundaVida.objects.all().order_by(
+        "-activo", "nombre"
+    )
+
+    return render(
+        request,
+        "objetos/administrar_lugares.html",
+        {
+            "lugares": lugares,
+        }
+    )
+
+
+@login_required
+def crear_lugar(request):
+
+    if not request.user.is_superuser:
+        return HttpResponseForbidden(
+            "No tienes permiso para registrar lugares."
+        )
+
+    if request.method == "POST":
+
+        formulario = LugarSegundaVidaForm(
+            request.POST,
+            request.FILES
+        )
+
+        if formulario.is_valid():
+
+            lugar = formulario.save()
+
+            messages.success(
+                request,
+                f"El lugar {lugar.nombre} se registró correctamente."
+            )
+
+            return redirect("administrar_lugares")
+
+    else:
+        formulario = LugarSegundaVidaForm()
+
+    return render(
+        request,
+        "objetos/formulario_lugar.html",
+        {
+            "formulario": formulario,
+            "titulo": "Registrar lugar",
+            "texto_boton": "Registrar lugar",
+        }
+    )
+
+
+@login_required
+def editar_lugar(request, lugar_id):
+
+    if not request.user.is_superuser:
+        return HttpResponseForbidden(
+            "No tienes permiso para editar lugares."
+        )
+
+    lugar = get_object_or_404(
+        LugarSegundaVida,
+        id=lugar_id
+    )
+
+    if request.method == "POST":
+
+        formulario = LugarSegundaVidaForm(
+            request.POST,
+            request.FILES,
+            instance=lugar
+        )
+
+        if formulario.is_valid():
+
+            formulario.save()
+
+            messages.success(
+                request,
+                f"El lugar {lugar.nombre} se actualizó correctamente."
+            )
+
+            return redirect("administrar_lugares")
+
+    else:
+        formulario = LugarSegundaVidaForm(
+            instance=lugar
+        )
+
+    return render(
+        request,
+        "objetos/formulario_lugar.html",
+        {
+            "formulario": formulario,
+            "titulo": "Editar lugar",
+            "texto_boton": "Guardar cambios",
+            "lugar": lugar,
+        }
+    )
+
+
+@login_required
+def cambiar_estado_lugar(request, lugar_id):
+
+    if not request.user.is_superuser:
+        return HttpResponseForbidden(
+            "No tienes permiso para modificar lugares."
+        )
+
+    if request.method != "POST":
+        return redirect("administrar_lugares")
+
+    lugar = get_object_or_404(
+        LugarSegundaVida,
+        id=lugar_id
+    )
+
+    lugar.activo = not lugar.activo
+    lugar.save(update_fields=["activo"])
+
+    if lugar.activo:
+        messages.success(
+            request,
+            f"El lugar {lugar.nombre} fue reactivado."
+        )
+    else:
+        messages.success(
+            request,
+            f"El lugar {lugar.nombre} fue desactivado."
+        )
+
+    return redirect("administrar_lugares")

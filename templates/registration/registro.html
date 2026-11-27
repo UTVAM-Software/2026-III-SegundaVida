@@ -1,48 +1,268 @@
 {% extends "base.html" %}
 
-{% block title %}
-    Crear cuenta | Segunda Vida
+{% block title %}Crear cuenta | Segunda Vida{% endblock %}
+
+{% block extra_head %}
+<style>
+    .contenedor {
+        max-width: 960px;
+        padding-top: 30px;
+    }
+
+    .auth-card-container {
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+        overflow: hidden;
+        background: var(--blanco);
+        border: 1px solid var(--borde);
+        border-radius: 24px;
+        box-shadow: var(--sombra-media);
+    }
+
+    .auth-panel-form {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 40px;
+    }
+
+    .auth-header {
+        margin-bottom: 24px;
+        text-align: center;
+    }
+
+    .auth-header h1 {
+        margin: 0 0 6px;
+        color: var(--verde-oscuro);
+        font-size: 28px;
+    }
+
+    .auth-header p {
+        margin: 0;
+        color: var(--texto-secundario);
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    .auth-field {
+        margin-bottom: 14px;
+    }
+
+    .auth-field label {
+        margin: 0 0 6px 12px;
+        color: var(--texto-secundario);
+        font-size: 12px;
+    }
+
+    .input-icon-group {
+        position: relative;
+    }
+
+    .input-icon-group > .lucide-icon {
+        position: absolute;
+        top: 50%;
+        left: 14px;
+        width: 18px;
+        height: 18px;
+        color: var(--texto-suave);
+        pointer-events: none;
+        transform: translateY(-50%);
+    }
+
+    .input-icon-group input {
+        width: 100%;
+        min-height: 44px;
+        margin: 0;
+        padding: 10px 14px 10px 42px;
+        background: var(--fondo);
+        border-radius: 999px;
+        font-size: 13px;
+    }
+
+    .auth-errors {
+        margin: 5px 10px 0;
+        color: var(--error);
+        font-size: 12px;
+    }
+
+    .auth-errors ul,
+    .auth-form-errors ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .auth-form-errors {
+        margin-bottom: 16px;
+        padding: 11px 14px;
+        color: var(--error);
+        background: var(--error-suave);
+        border: 1px solid var(--error-borde);
+        border-radius: var(--radio);
+        font-size: 13px;
+    }
+
+    .btn-auth-submit {
+        width: 100%;
+        padding: 12px;
+        border-radius: 999px;
+        font-size: 15px;
+    }
+
+    .auth-footer-switch {
+        margin-top: 20px;
+        color: var(--texto-secundario);
+        font-size: 13px;
+        text-align: center;
+    }
+
+    main .auth-footer-switch a,
+    main .auth-back-link {
+        color: var(--verde-principal);
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    main .auth-footer-switch a:hover,
+    main .auth-back-link:hover {
+        text-decoration: underline;
+    }
+
+    .auth-back-link {
+        display: block;
+        margin-top: 14px;
+        font-size: 12px;
+        text-align: center;
+    }
+
+    .auth-panel-banner {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 40px;
+        background: linear-gradient(135deg, var(--verde-muy-suave), #E3EDE6);
+        text-align: right;
+    }
+
+    .auth-brand {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
+        color: var(--verde-principal);
+        font-weight: 700;
+    }
+
+    .auth-banner-quote {
+        color: var(--verde-oscuro);
+        font-family: Georgia, serif;
+        font-size: 20px;
+        font-style: italic;
+        line-height: 1.4;
+    }
+
+    .auth-banner-footer {
+        color: var(--texto);
+        font-size: 12px;
+    }
+
+    @media (max-width: 850px) {
+        .auth-card-container { grid-template-columns: 1fr; }
+        .auth-panel-banner { display: none; }
+        .auth-panel-form { padding: 30px 24px; }
+    }
+
+    @media (max-width: 480px) {
+        .contenedor { width: calc(100% - 24px); }
+        .auth-panel-form { padding: 26px 18px; }
+        .auth-header h1 { font-size: 25px; }
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-
-    <section class="tarjeta">
-
-        <h1> Crear cuenta</h1>
-
-        <p>
-            Únete a Segunda Vida y ayuda a que los objetos
-            tengan una nueva oportunidad.
-        </p>
+<div class="auth-card-container">
+    <section class="auth-panel-form">
+        <header class="auth-header">
+            <h1>Crea tu cuenta</h1>
+            <p>Únete a una comunidad que intercambia, comparte y reduce residuos.</p>
+        </header>
 
         <form method="POST">
-
             {% csrf_token %}
 
-            {{ formulario.as_p }}
+            {% if formulario.non_field_errors %}
+                <div class="auth-form-errors" role="alert">
+                    {{ formulario.non_field_errors }}
+                </div>
+            {% endif %}
 
-            <button
-                class="boton"
-                type="submit"
-            >
-                Crear cuenta
-            </button>
+            <div class="auth-field">
+                <label for="{{ formulario.username.id_for_label }}">Nombre de usuario</label>
+                <div class="input-icon-group">
+                    <i data-lucide="at-sign" class="lucide-icon" aria-hidden="true"></i>
+                    {{ formulario.username }}
+                </div>
+                {% if formulario.username.errors %}
+                    <div class="auth-errors">{{ formulario.username.errors }}</div>
+                {% endif %}
+            </div>
 
+            <div class="auth-field">
+                <label for="{{ formulario.email.id_for_label }}">Correo electrónico</label>
+                <div class="input-icon-group">
+                    <i data-lucide="mail" class="lucide-icon" aria-hidden="true"></i>
+                    {{ formulario.email }}
+                </div>
+                {% if formulario.email.errors %}
+                    <div class="auth-errors">{{ formulario.email.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="auth-field">
+                <label for="{{ formulario.password.id_for_label }}">Contraseña</label>
+                <div class="input-icon-group">
+                    <i data-lucide="lock-keyhole" class="lucide-icon" aria-hidden="true"></i>
+                    {{ formulario.password }}
+                </div>
+                {% if formulario.password.errors %}
+                    <div class="auth-errors">{{ formulario.password.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="auth-field">
+                <label for="{{ formulario.password_confirmacion.id_for_label }}">Confirmar contraseña</label>
+                <div class="input-icon-group">
+                    <i data-lucide="lock-keyhole" class="lucide-icon" aria-hidden="true"></i>
+                    {{ formulario.password_confirmacion }}
+                </div>
+                {% if formulario.password_confirmacion.errors %}
+                    <div class="auth-errors">{{ formulario.password_confirmacion.errors }}</div>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="boton btn-auth-submit">Crear cuenta</button>
         </form>
 
-        <br>
-
-        <p>
-            ¿Ya tienes una cuenta?
-            <a href="{% url 'login' %}">
-                Iniciar sesión
-            </a>
-        </p>
-
-        <a href="{% url 'inicio' %}">
-            ← Volver al inicio
-        </a>
-
+        <div class="auth-footer-switch">
+            ¿Ya tienes una cuenta? <a href="{% url 'login' %}">Iniciar sesión</a>
+        </div>
+        <a class="auth-back-link" href="{% url 'inicio' %}">← Volver al inicio</a>
     </section>
 
+    <aside class="auth-panel-banner">
+        <div class="auth-brand">
+            <i data-lucide="recycle" class="lucide-icon" aria-hidden="true"></i>
+            Segunda Vida
+        </div>
+
+        <div class="auth-banner-quote">
+            “Más segundas oportunidades,<br>menos residuos.”
+        </div>
+
+        <div class="auth-banner-footer">
+            Únete hoy y empieza a transformar hábitos.
+        </div>
+    </aside>
+</div>
 {% endblock %}
